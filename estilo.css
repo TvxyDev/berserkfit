@@ -86,11 +86,11 @@ nav ul li {
 .heroi-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    align-items: center; /* Alinha verticalmente ao centro */
+    align-items: center; 
     gap: 60px;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px 20px 0; /* Reduz o padding superior */
+    padding: 20px 20px 0; 
 }
 
 .heroi-texto h1 {
@@ -146,10 +146,6 @@ nav ul li {
     background-color: var(--cor-destaque-escuro);
     transform: scale(1.05);
     box-shadow: 0 15px 25px rgba(14, 6, 28, 0.3);
-}
-
-.heroi-imagem {
-    align-self: end; /* Força a imagem a alinhar na parte inferior da sua célula do grid */
 }
 
 .heroi-imagem img {
