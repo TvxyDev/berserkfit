@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - BerserkFit</title>
+    <link rel="stylesheet" href="estilo.css">
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="footer.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logotipo">
+                <img src="assets/logotipo1.png" alt="Logotipo BerserkFit">
+            </div>
+            <ul>
+                <li><a href="index.html#inicio">Início</a></li>
+                <li><a href="index.html#funcionalidades">Funcionalidades</a></li>
+                <li><a href="index.html#planos">Planos</a></li>
+                <li><a href="index.html#sobre">Sobre</a></li>
+                <li><a href="index.html#depoimentos">Depoimentos</a></li>
+                <li><a href="index.html#contato">Contato</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-login">
+        <div class="login-container">
+            <div class="login-box">
+                <h1>Bem-vindo de volta!</h1>
+                <form>
+                    <div class="input-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Palavra-passe</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <a href="#" class="forgot-password">Esqueceu a sua palavra-passe?</a>
+                    <button type="submit" class="btn-signin">Entrar</button>
+                    <button type="button" class="btn-google">
+                        <img src="assets/google-icon.svg" alt="Google Icon"> Entrar com Google
+                    </button>
+                </form>
+                <p class="signup-link">Não tem uma conta? <a href="#">Crie uma conta</a></p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>BerserkFit</h3>
+                <p>Subscreva a nossa newsletter para se manter atualizado sobre funcionalidades e lançamentos.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Insira o seu email">
+                    <button type="submit">Subscrever</button>
+                </form>
+                <p class="newsletter-disclaimer">Ao subscrever, concorda com a nossa Política de Privacidade e consente em receber atualizações da nossa empresa.</p>
+            </div>
+            <div class="footer-column">
+                <h4>Navegação</h4>
+                <ul>
+                    <li><a href="index.html#inicio">Início</a></li>
+                    <li><a href="index.html#funcionalidades">Funcionalidades</a></li>
+                    <li><a href="index.html#planos">Planos</a></li>
+                    <li><a href="index.html#sobre">Sobre</a></li>
+                    <li><a href="index.html#depoimentos">Depoimentos</a></li>
+                    <li><a href="index.html#contato">Contato</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Siga-nos</h4>
+                <div class="social-icons">
+                    <a href="#"><img src="assets/facebook.svg" alt="Facebook"> Facebook</a>
+                    <a href="#"><img src="assets/instagram.svg" alt="Instagram"> Instagram</a>
+                    <a href="#"><img src="assets/twitter.svg" alt="Twitter"> Twitter</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 BerserkFit. Todos os direitos reservados.</p>
+            <div class="footer-legal">
+                <a href="#">Política de Privacidade</a>
+                <a href="#">Termos de Serviço</a>
+                <a href="#">Definições de Cookies</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

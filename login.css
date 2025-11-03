@@ -1,0 +1,155 @@
+:root {
+    --cor-fundo-login: var(--cor-fundo);
+    --cor-texto-login: var(--cor-texto);
+    --cor-botao-principal: var(--cor-destaque);
+    --cor-botao-principal-texto: var(--cor-primaria);
+    --cor-botao-secundario: var(--cor-secundaria);
+    --cor-botao-secundario-texto: var(--cor-destaque);
+    --cor-input-borda: var(--cor-intermedia);
+}
+
+body {
+    background-color: var(--cor-fundo-login);
+}
+
+.main-login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    flex-grow: 1;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 450px;
+}
+
+.login-box {
+    background-color: var(--cor-fundo-login);
+    padding: 0;
+    text-align: left;
+    color: var(--cor-texto-login);
+}
+
+.login-box h1 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 2.5em;
+    margin-bottom: 40px;
+    text-align: left;
+    color: var(--cor-destaque);
+}
+
+.input-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.input-group label {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9em;
+    color: var(--cor-texto-login);
+    margin-bottom: 10px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 0;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 1px solid var(--cor-input-borda);
+    background-color: transparent;
+    color: var(--cor-texto-login);
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-bottom-color: var(--cor-destaque);
+}
+
+.forgot-password {
+    display: block;
+    text-align: left;
+    margin-bottom: 30px;
+    color: var(--cor-texto-login);
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.btn-signin, .btn-google {
+    width: 100%;
+    padding: 15px;
+    border-radius: 25px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.btn-signin {
+    background-color: var(--cor-botao-principal);
+    color: var(--cor-botao-principal-texto);
+    border: 1px solid var(--cor-botao-principal);
+}
+
+.btn-signin:hover {
+    background-color: var(--cor-destaque-escuro);
+}
+
+.btn-google {
+    background-color: var(--cor-botao-secundario);
+    color: var(--cor-botao-secundario-texto);
+    border: 1px solid var(--cor-intermedia);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-google:hover {
+    background-color: #e8e3f5;
+}
+
+.btn-google img {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+}
+
+.signup-link {
+    margin-top: 25px;
+    text-align: left;
+    font-size: 0.9em;
+    color: var(--cor-texto-login);
+}
+
+.signup-link a {
+    color: var(--cor-destaque);
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/* Override some styles from estilo.css */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: var(--cor-fundo-login);
+    border-bottom: none;
+}
+
+header a {
+    color: var(--cor-texto-login);
+}
+
+header a:hover {
+    color: var(--cor-destaque);
+}
