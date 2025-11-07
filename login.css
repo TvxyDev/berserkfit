@@ -10,19 +10,24 @@
 
 body {
     background-color: var(--cor-fundo-login);
+    overflow: hidden; /* Hide scrollbars from floating icons */
 }
 
 .main-login {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 60px 20px;
     flex-grow: 1;
+    z-index: 1;
 }
 
 .login-container {
     width: 100%;
     max-width: 450px;
+    position: relative;
+    z-index: 2; /* Ensure login form is above icons */
 }
 
 .login-box {
@@ -133,6 +138,81 @@ body {
     font-weight: bold;
     text-decoration: underline;
 }
+
+/* Floating Icons */
+.floating-icons-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.floating-icon {
+    position: absolute;
+    display: block;
+    width: 50px;
+    height: 50px;
+    animation: float 10s ease-in-out infinite;
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
+    opacity: 0.7;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-200px) rotate(180deg);
+    }
+    100% {
+        transform: translateY(0) rotate(360deg);
+    }
+}
+
+.floating-icon:nth-child(1) {
+    top: 20%;
+    left: 15%;
+    animation-delay: 0s;
+    width: 60px; height: 60px;
+}
+
+.floating-icon:nth-child(2) {
+    top: 60%;
+    left: 5%;
+    animation-delay: 2s;
+    animation-duration: 12s;
+}
+
+.floating-icon:nth-child(3) {
+    top: 10%;
+    left: 85%;
+    animation-delay: 4s;
+    width: 40px; height: 40px;
+}
+
+.floating-icon:nth-child(4) {
+    top: 80%;
+    left: 90%;
+    animation-delay: 6s;
+    animation-duration: 14s;
+}
+
+.floating-icon:nth-child(5) {
+    top: 50%;
+    left: 40%;
+    animation-delay: 1s;
+}
+
+.floating-icon:nth-child(6) {
+    top: 30%;
+    left: 60%;
+    animation-delay: 3s;
+    animation-duration: 11s;
+}
+
+
 
 /* Override some styles from estilo.css */
 body {
