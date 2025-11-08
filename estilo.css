@@ -587,13 +587,6 @@ section:nth-of-type(even) .cartao p {
 transform: scale(1.2);
 }
 
-footer {
-text-align: center;
-padding: 40px 20px;
-background-color: var(--cor-primaria);
-border-top: 1px solid var(--cor-secundaria);
-}
-
 .links-rodape {
 margin-bottom: 20px;
 }
