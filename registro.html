@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - BerserkFit</title>
+    <title>Registro - BerserkFit</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="estilo.css">
     <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="registro.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
@@ -39,8 +40,12 @@
         </div>
         <div class="login-container">
             <div class="login-box">
-                <h1>Bem-vindo de volta!</h1>
+                <h1>Crie a sua conta</h1>
                 <form>
+                    <div class="input-group">
+                        <label for="username">Nome de usuário</label>
+                        <input type="text" id="username" required>
+                    </div>
                     <div class="input-group">
                         <label for="email">Email</label>
                         <input type="email" id="email" required>
@@ -49,13 +54,13 @@
                         <label for="password">Palavra-passe</label>
                         <input type="password" id="password" required>
                     </div>
-                    <a href="#" class="forgot-password">Esqueceu a sua palavra-passe?</a>
-                    <button type="submit" class="btn-signin">Entrar</button>
-                    <button type="button" class="btn-google">
-                        <img src="assets/google-icon.svg" alt="Google Icon"> Entrar com Google
-                    </button>
+                    <div class="input-group">
+                        <label for="confirm-password">Confirmar palavra-passe</label>
+                        <input type="password" id="confirm-password" required>
+                    </div>
+                    <button type="submit" class="btn-signin">Registar</button>
                 </form>
-                <p class="signup-link">Não tem uma conta? <a href="registro.html">Crie uma conta</a></p>
+                <p class="signup-link">Já tem uma conta? <a href="login.html">Entrar</a></p>
             </div>
         </div>
     </main>

@@ -1,0 +1,224 @@
+/* Estilos Gerais */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #121212;
+    color: #E0E0E0;
+    margin: 0;
+    padding: 0 0 100px 0; /* Espaço para a navbar inferior */
+}
+
+/* Animação de Fade-in */
+.fade-in-element {
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Cabeçalho */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px;
+    background: #1A1A1A;
+    border-bottom: 1px solid #2A2A2A;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.saudacao h1 {
+    font-size: 2.2em;
+    font-weight: 800;
+    margin: 0;
+}
+
+.saudacao p {
+    font-size: 1.1em;
+    color: #B0B0B0;
+    margin: 5px 0 0;
+}
+
+.perfil-header {
+    display: flex;
+    align-items: center;
+    text-align: right;
+}
+
+.avatar {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    border: 2px solid #007BFF;
+    margin-right: 15px;
+}
+
+.data {
+    font-size: 1em;
+    color: #B0B0B0;
+}
+
+/* Conteúdo Principal */
+main {
+    padding: 25px;
+}
+
+section {
+    margin-bottom: 35px;
+}
+
+h2 {
+    font-size: 1.8em;
+    font-weight: 700;
+    border-bottom: 2px solid #007BFF;
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+}
+
+/* Resumo do Dia */
+.grade-resumo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.card-resumo {
+    background: #1E1E1E;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card-resumo:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,123,255,0.3);
+}
+
+.card-resumo h3 {
+    margin: 0 0 10px;
+    font-size: 1.3em;
+    font-weight: 600;
+}
+
+.card-resumo p {
+    margin: 0 0 15px;
+    font-size: 1.1em;
+    color: #B0B0B0;
+}
+
+.progresso-bar {
+    background: #333;
+    border-radius: 5px;
+    height: 10px;
+    overflow: hidden;
+}
+
+.progresso {
+    background: #007BFF;
+    height: 100%;
+    border-radius: 5px;
+}
+
+/* Objetivos Diários */
+.lista-objetivos {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.lista-objetivos li {
+    background: #1E1E1E;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    font-size: 1.2em;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.lista-objetivos input[type="checkbox"] {
+    margin-right: 15px;
+    width: 20px;
+    height: 20px;
+}
+
+/* Gráfico */
+.placeholder-grafico {
+    background: #1E1E1E;
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    color: #888;
+    font-size: 1.2em;
+}
+
+/* Dica do Dia */
+.cartao-dica {
+    background: linear-gradient(135deg, #007BFF, #0056b3);
+    color: #FFF;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 1.3em;
+    font-style: italic;
+}
+
+/* Navbar Inferior */
+.navbar {
+    position: fixed;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    background: #1A1A1A;
+    border-radius: 30px;
+    padding: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    width: calc(100% - 40px);
+    max-width: 500px;
+    justify-content: space-around;
+}
+
+.nav-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #B0B0B0;
+    text-decoration: none;
+    padding: 5px 15px;
+    border-radius: 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-link.active {
+    background-color: #007BFF;
+    color: #FFF;
+}
+
+.nav-link .icon {
+    font-size: 1.5em;
+}
+
+.nav-link .text {
+    font-size: 0.8em;
+    margin-top: 4px;
+}
+
+/* Media Queries */
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .perfil-header {
+        margin-top: 15px;
+    }
+
+    .nav-link {
+        padding: 5px 10px;
+    }
+}
