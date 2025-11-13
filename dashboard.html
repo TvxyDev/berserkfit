@@ -5,16 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - BerserkFit</title>
     <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="fade-in-element">
-        <div class="saudacao">
-            <h1>👋 Olá, Tiago!</h1>
-            <p>Como vai o foco hoje?</p>
+        <div class="header-top">
+            <h1 class="app-title">BerserkFit AI</h1>
+            <div class="streak-counter">
+                <i class="fa-solid fa-fire"></i>
+                <span>1</span>
+            </div>
         </div>
-        <div class="perfil-header">
-            <img src="assets/pessoa.png" alt="Foto do usuário" class="avatar">
-            <p class="data">Quinta-feira, 13 de Novembro</p>
+        <div class="calendar">
+            <div class="calendar-day">
+                <span>S</span>
+                <span>15</span>
+            </div>
+            <div class="calendar-day">
+                <span>T</span>
+                <span>16</span>
+            </div>
+            <div class="calendar-day active">
+                <span>Q</span>
+                <span>17</span>
+            </div>
+            <div class="calendar-day">
+                <span>Q</span>
+                <span>18</span>
+            </div>
+            <div class="calendar-day">
+                <span>S</span>
+                <span>19</span>
+            </div>
+             <div class="calendar-day">
+                <span>S</span>
+                <span>20</span>
+            </div>
+             <div class="calendar-day">
+                <span>D</span>
+                <span>21</span>
+            </div>
+        </div>
+        <div class="header-greeting">
+            <h2>Bom dia, Tiago!</h2>
+            <p>Pronto para conquistar o dia?</p>
         </div>
     </header>
 
@@ -53,37 +90,74 @@
             </div>
         </section>
 
-        <section id="objetivos-diarios" class="fade-in-element">
-            <h2>Objetivos Diários</h2>
-            <ul class="lista-objetivos">
-                <li><input type="checkbox" checked> ✅ Beber 3L de água</li>
-                <li><input type="checkbox"> ✅ Fazer 10.000 passos</li>
-                <li><input type="checkbox"> 🔄 Alongar 10 minutos</li>
-                <li><input type="checkbox"> ⏳ Treinar 1h</li>
-            </ul>
-        </section>
+        <section id="dashboard-pastas" class="fade-in-element">
+            <div class="grid-pastas">
+                <!-- Pasta Objetivos -->
+                <div class="pasta">
+                    <div class="pasta-header">
+                        <i class="fa-solid fa-arrows-left-right"></i>
+                    </div>
+                    <div class="pasta-content">
+                        <h3>Objetivos</h3>
+                        <p>4 itens</p>
+                    </div>
+                </div>
 
-        <section id="grafico-progresso" class="fade-in-element">
-            <h2>Gráfico de Progresso Semanal</h2>
-            <div class="placeholder-grafico">
-                <p>[Gráfico de consumo de água, calorias e treino]</p>
-            </div>
-        </section>
+                <!-- Pasta Progresso -->
+                <div class="pasta">
+                     <div class="pasta-header">
+                        <i class="fa-solid fa-arrows-left-right"></i>
+                    </div>
+                    <div class="pasta-content">
+                        <h3>Progresso</h3>
+                        <p>3 gráficos</p>
+                    </div>
+                </div>
 
-        <section id="dica-dia" class="fade-in-element">
-            <h2>Dica do Dia</h2>
-            <div class="cartao-dica">
-                <p>💬 "Lembre-se: consistência vence motivação."</p>
+                <!-- Card Peso Corporal -->
+                <div class="card-grande">
+                    <div class="card-grande-header">
+                        <span>Body weight</span>
+                        <i class="fa-solid fa-arrows-left-right"></i>
+                    </div>
+                    <div class="card-grande-body">
+                        <span>84.6</span>
+                        <span class="unidade">kg</span>
+                    </div>
+                    <div class="card-grande-footer">
+                        <span>Logged about 15 hours ago</span>
+                    </div>
+                </div>
+
+                <!-- Card Dica -->
+                <div class="card-pequeno">
+                     <div class="pasta-header">
+                        <i class="fa-solid fa-arrows-left-right"></i>
+                    </div>
+                    <div class.pasta-content">
+                        <h3>Dica do Dia</h3>
+                    </div>
+                </div>
+
+                 <!-- Card Nutrição -->
+                <div class="card-pequeno">
+                     <div class="pasta-header">
+                        <i class="fa-solid fa-arrows-left-right"></i>
+                    </div>
+                    <div class="pasta-content">
+                        <h3>Nutrição</h3>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
 
     <nav class="navbar">
-        <a href="#" class="nav-link active"><span class="icon">🏠</span> <span class="text">Home</span></a>
-        <a href="#" class="nav-link"><span class="icon">💪</span> <span class="text">Treinos</span></a>
-        <a href="#" class="nav-link"><span class="icon">📈</span> <span class="text">Progresso</span></a>
-        <a href="#" class="nav-link"><span class="icon">🧠</span> <span class="text">IA</span></a>
-        <a href="#" class="nav-link"><span class="icon">👤</span> <span class="text">Perfil</span></a>
+        <a href="#" class="nav-link active"><i class="fas fa-home icon"></i> <span class="text">Home</span></a>
+        <a href="#" class="nav-link"><i class="fas fa-dumbbell icon"></i> <span class="text">Treinos</span></a>
+        <a href="#" class="nav-link"><i class="fas fa-chart-line icon"></i> <span class="text">Progresso</span></a>
+        <a href="#" class="nav-link"><i class="fas fa-brain icon"></i> <span class="text">IA</span></a>
+        <a href="#" class="nav-link"><i class="fas fa-user icon"></i> <span class="text">Perfil</span></a>
     </nav>
 
 </body>
