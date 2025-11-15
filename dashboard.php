@@ -1,0 +1,175 @@
+<?php
+session_start();
+
+// Verifica se o usuário está logado
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+?>
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - BerserkFit</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="fade-in-element">
+        <div class="header-top">
+            <h1 class="app-title">BerserkFit AI</h1>
+            <div class="streak-counter">
+                <i class="fa-solid fa-fire"></i>
+                <span>1</span>
+            </div>
+        </div>
+        <div class="calendar">
+            <div class="calendar-day">
+                <span>S</span>
+                <span>15</span>
+            </div>
+            <div class="calendar-day">
+                <span>T</span>
+                <span>16</span>
+            </div>
+            <div class="calendar-day active">
+                <span>Q</span>
+                <span>17</span>
+            </div>
+            <div class="calendar-day">
+                <span>Q</span>
+                <span>18</span>
+            </div>
+            <div class="calendar-day">
+                <span>S</span>
+                <span>19</span>
+            </div>
+             <div class="calendar-day">
+                <span>S</span>
+                <span>20</span>
+            </div>
+             <div class="calendar-day">
+                <span>D</span>
+                <span>21</span>
+            </div>
+        </div>
+        <div class="header-greeting">
+            <h2>Bom dia, <?php echo htmlspecialchars($_SESSION['user_nome']); ?>!</h2>
+            <p>Pronto para conquistar o dia?</p>
+        </div>
+    </header>
+
+    <main>
+        <section id="resumo-dia" class="fade-in-element">
+            <h2>Resumo do Dia</h2>
+            <div class="grade-resumo">
+                <div class="card-resumo">
+                    <h3>💧 Água ingerida</h3>
+                    <p>1.8L / 3L</p>
+                    <div class="progresso-bar">
+                        <div class="progresso" style="width: 60%;"></div>
+                    </div>
+                </div>
+                <div class="card-resumo">
+                    <h3>🔥 Calorias queimadas</h3>
+                    <p>620 kcal</p>
+                    <div class="progresso-bar">
+                        <div class="progresso" style="width: 80%;"></div>
+                    </div>
+                </div>
+                <div class="card-resumo">
+                    <h3>⏱️ Minutos de treino</h3>
+                    <p>45 min</p>
+                    <div class="progresso-bar">
+                        <div class="progresso" style="width: 75%;"></div>
+                    </div>
+                </div>
+                <div class="card-resumo">
+                    <h3>💤 Sono</h3>
+                    <p>7h 30min</p>
+                    <div class="progresso-bar">
+                        <div class="progresso" style="width: 94%;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="dashboard-pastas" class="fade-in-element">
+            <div class="grid-pastas">
+                <!-- Pasta Objetivos -->
+                <div class="pasta">
+                    <div class="pasta-header">
+                        <i class="fa-solid fa-arrows-left-right"></i>
+                    </div>
+                    <div class="pasta-content">
+                        <h3>Objetivos</h3>
+                        <p>4 itens</p>
+                    </div>
+                </div>
+
+                <!-- Pasta Progresso -->
+                <div class="pasta">
+                     <div class="pasta-header">
+                        <i class="fa-solid fa-arrows-left-right"></i>
+                    </div>
+                    <div class="pasta-content">
+                        <h3>Progresso</h3>
+                        <p>3 gráficos</p>
+                    </div>
+                </div>
+
+                <!-- Card Peso Corporal -->
+                <div class="card-grande">
+                    <div class="card-grande-header">
+                        <span>Body weight</span>
+                        <i class="fa-solid fa-arrows-left-right"></i>
+                    </div>
+                    <div class="card-grande-body">
+                        <span>84.6</span>
+                        <span class="unidade">kg</span>
+                    </div>
+                    <div class="card-grande-footer">
+                        <span>Logged about 15 hours ago</span>
+                    </div>
+                </div>
+
+                <!-- Card Dica -->
+                <div class="card-pequeno">
+                     <div class="pasta-header">
+                        <i class="fa-solid fa-arrows-left-right"></i>
+                    </div>
+                    <div class="pasta-content">
+                        <h3>Dica do Dia</h3>
+                    </div>
+                </div>
+
+                 <!-- Card Nutrição -->
+                <div class="card-pequeno">
+                     <div class="pasta-header">
+                        <i class="fa-solid fa-arrows-left-right"></i>
+                    </div>
+                    <div class="pasta-content">
+                        <h3>Nutrição</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <nav class="navbar">
+        <a href="dashboard.php" class="nav-link active"><i class="fas fa-home icon"></i> <span class="text">Home</span></a>
+        <a href="#" class="nav-link"><i class="fas fa-dumbbell icon"></i> <span class="text">Treinos</span></a>
+        <a href="#" class="nav-link"><i class="fas fa-chart-line icon"></i> <span class="text">Progresso</span></a>
+        <a href="#" class="nav-link"><i class="fas fa-brain icon"></i> <span class="text">IA</span></a>
+        <a href="perfil.php" class="nav-link"><i class="fas fa-user icon"></i> <span class="text">Perfil</span></a>
+    </nav>
+
+</body>
+</html>
+
