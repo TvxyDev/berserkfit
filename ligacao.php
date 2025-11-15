@@ -1,9 +1,8 @@
 <?php
-$servername = getenv('MYSQLHOST');
-$username = getenv('MYSQLUSER');
-$password = getenv('MYSQLPASSWORD');
-$dbname = getenv('MYSQLDATABASE');
-$port = getenv('MYSQLPORT');
+$servername = 'sql7.freesqldatabase.com';
+$username = 'sql7808008';
+$password = 'FVYW7uwPyH';
+$dbname = 'sql7808008';
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
@@ -12,5 +11,6 @@ if ($conn->connect_error) {
 //echo "Ligação bem sucedida";
 
 ?>
+
 
 
