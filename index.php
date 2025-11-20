@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BerserkFit</title>
-    <link rel="stylesheet" href="estilo.css" />
-    <link rel="stylesheet" href="footer.css" />
+    <link rel="stylesheet" href="css/estilo.css" />
+    <link rel="stylesheet" href="css/footer.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,15 +20,20 @@
         <div class="logotipo">
           <img src="assets/logotipo1.png" alt="Logotipo BerserkFit" />
         </div>
-        <ul class="nav-menu">
+        <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="menu-overlay" id="menuOverlay"></div>
+        <ul class="nav-menu" id="navMenu">
           <li><a href="#inicio">Início</a></li>
           <li><a href="#funcionalidades">Funcionalidades</a></li>
           <li><a href="#planos">Planos</a></li>
           <li><a href="#sobre">Sobre</a></li>
           <li><a href="#depoimentos">Depoimentos</a></li>
           <li><a href="#contato">Contato</a></li>
+          <li class="botao-login-mobile"><a href="login.php" class="botao-login">Login</a></li>
         </ul>
-        <a href="login.php" class="botao-login">Login</a>
+        <a href="login.php" class="botao-login botao-login-desktop">Login</a>
       </nav>
     </header>
 

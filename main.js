@@ -34,3 +34,57 @@ fadeInElements.forEach(element => {
     observer.observe(element);
 });
 
+// Menu Hambúrguer
+const menuToggle = document.getElementById('menuToggle');
+const navMenu = document.getElementById('navMenu');
+const menuOverlay = document.getElementById('menuOverlay');
+
+function toggleMenu() {
+    if (navMenu && menuToggle) {
+        navMenu.classList.toggle('active');
+        if (menuOverlay) {
+            menuOverlay.classList.toggle('active');
+        }
+        const icon = menuToggle.querySelector('i');
+        if (icon) {
+            if (navMenu.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+                document.body.style.overflow = 'hidden';
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+                document.body.style.overflow = '';
+            }
+        }
+    }
+}
+
+function closeMenu() {
+    if (navMenu) {
+        navMenu.classList.remove('active');
+        if (menuOverlay) {
+            menuOverlay.classList.remove('active');
+        }
+        const icon = menuToggle ? menuToggle.querySelector('i') : null;
+        if (icon) {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+        document.body.style.overflow = '';
+    }
+}
+
+if (menuToggle && navMenu) {
+    menuToggle.addEventListener('click', toggleMenu);
+    
+    if (menuOverlay) {
+        menuOverlay.addEventListener('click', closeMenu);
+    }
+    
+    const navLinks = navMenu.querySelectorAll('a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', closeMenu);
+    });
+}
+

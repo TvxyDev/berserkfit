@@ -58,44 +58,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro - BerserkFit</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="estilo.css">
-    <link rel="stylesheet" href="login.css">
-    <link rel="stylesheet" href="registro.css">
+    <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/registro.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        .input-group select {
-            width: 100%;
-            padding: 12px 0;
-            box-sizing: border-box;
-            border: none;
-            border-bottom: 1px solid var(--cor-input-borda, #ccc);
-            background-color: transparent;
-            color: var(--cor-texto-login, #333);
-            font-size: 1em;
-            font-family: 'Inter', sans-serif;
-            transition: border-color 0.3s ease;
-            cursor: pointer;
-        }
-        .input-group select:focus {
-            outline: none;
-            border-bottom-color: var(--cor-destaque, #0078d7);
-        }
-        .input-group select option {
-            background-color: var(--cor-fundo-login, #fff);
-            color: var(--cor-texto-login, #333);
-        }
-        .senha-error {
-            color: red;
-            font-size: 0.85em;
-            margin-top: 5px;
-            display: none;
-        }
-        .senha-error.show {
-            display: block;
-        }
-    </style>
     <script>
         function validarSenhas() {
             const senha = document.getElementById('senha').value;

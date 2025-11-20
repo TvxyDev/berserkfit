@@ -23,13 +23,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         // Verifica a senha
         if (password_verify($senha, $user['password_hash'])) {
+            // Buscar tipo de usuário
+            $sql_tipo = "SELECT COALESCE(tipo_usuario, 'Usuario') as tipo_usuario FROM user WHERE id_user = ?";
+            $stmt_tipo = $conn->prepare($sql_tipo);
+            $stmt_tipo->bind_param("i", $user['id_user']);
+            $stmt_tipo->execute();
+            $result_tipo = $stmt_tipo->get_result();
+            $tipo_usuario = 'Usuario';
+            if ($row_tipo = $result_tipo->fetch_assoc()) {
+                $tipo_usuario = $row_tipo['tipo_usuario'] ?? 'Usuario';
+            }
+            $stmt_tipo->close();
+            
             // Login bem-sucedido
             $_SESSION['user_id'] = $user['id_user'];
             $_SESSION['user_nome'] = $user['nome'];
             $_SESSION['user_email'] = $user['email'];
+            $_SESSION['user_tipo'] = $tipo_usuario;
             
-            // Redireciona para dashboard ou página principal
-            header("Location: dashboard.php");
+            // Verifica se é o primeiro login (não tem hábitos criados)
+            $sql_check = "SELECT COUNT(*) as total FROM habito WHERE id_user = ?";
+            $stmt_check = $conn->prepare($sql_check);
+            $stmt_check->bind_param("i", $user['id_user']);
+            $stmt_check->execute();
+            $result_check = $stmt_check->get_result();
+            $row_check = $result_check->fetch_assoc();
+            $stmt_check->close();
+            
+            // Se não tem hábitos, redireciona para onboarding
+            if ($row_check['total'] == 0) {
+                header("Location: onboarding.php");
+            } else {
+                header("Location: dashboard.php");
+            }
             exit;
         } else {
             $mensagem = "❌ Email ou senha incorretos!";
@@ -50,8 +76,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - BerserkFit</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="estilo.css">
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" href="css/login.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
