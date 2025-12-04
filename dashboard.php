@@ -145,23 +145,32 @@ $sono_percentual = $sono_meta_minutos > 0 ? min(100, ($sono_total_minutos / $son
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - BerserkFit</title>
     <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
     <header class="fade-in-element">
         <div class="header-top">
             <h1 class="app-title">BerserkFit AI</h1>
             <div style="display: flex; gap: 15px; align-items: center;">
                 <?php if ($is_admin): ?>
-                    <a href="admin.php" style="color: var(--cor-texto-claro); text-decoration: none; font-size: 0.9em; padding: 8px 15px; background: rgba(220, 53, 69, 0.3); border-radius: 20px; transition: background 0.3s;" onmouseover="this.style.background='rgba(220, 53, 69, 0.5)'" onmouseout="this.style.background='rgba(220, 53, 69, 0.3)'">
+                    <a href="admin.php"
+                        style="color: var(--cor-texto-claro); text-decoration: none; font-size: 0.9em; padding: 8px 15px; background: rgba(220, 53, 69, 0.3); border-radius: 20px; transition: background 0.3s;"
+                        onmouseover="this.style.background='rgba(220, 53, 69, 0.5)'"
+                        onmouseout="this.style.background='rgba(220, 53, 69, 0.3)'">
                         <i class="fas fa-shield-alt"></i> Admin
                     </a>
                 <?php endif; ?>
@@ -176,7 +185,7 @@ $sono_percentual = $sono_meta_minutos > 0 ? min(100, ($sono_total_minutos / $son
             // Calcular os últimos 7 dias
             $dias_semana = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
             $dias_semana_nomes = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-            
+
             // Começar 6 dias atrás para mostrar 7 dias (incluindo hoje)
             for ($i = 6; $i >= 0; $i--) {
                 $timestamp = strtotime("-$i days");
@@ -184,11 +193,11 @@ $sono_percentual = $sono_meta_minutos > 0 ? min(100, ($sono_total_minutos / $son
                 $dia_mes = date('d', $timestamp);
                 $dia_semana_letra = $dias_semana[$dia_semana_num];
                 $is_hoje = date('Y-m-d', $timestamp) === date('Y-m-d');
-            ?>
-            <div class="calendar-day <?php echo $is_hoje ? 'active' : ''; ?>">
-                <span><?php echo $dia_semana_letra; ?></span>
-                <span><?php echo $dia_mes; ?></span>
-            </div>
+                ?>
+                <div class="calendar-day <?php echo $is_hoje ? 'active' : ''; ?>">
+                    <span><?php echo $dia_semana_letra; ?></span>
+                    <span><?php echo $dia_mes; ?></span>
+                </div>
             <?php } ?>
         </div>
         <div class="header-greeting">
@@ -224,12 +233,12 @@ $sono_percentual = $sono_meta_minutos > 0 ? min(100, ($sono_total_minutos / $son
                 </div>
                 <div class="card-resumo">
                     <h3>💤 Sono</h3>
-                    <p><?php 
-                        if ($horas_sono > 0 || $minutos_sono > 0) {
-                            echo $horas_sono . "h " . $minutos_sono . "min";
-                        } else {
-                            echo "--";
-                        }
+                    <p><?php
+                    if ($horas_sono > 0 || $minutos_sono > 0) {
+                        echo $horas_sono . "h " . $minutos_sono . "min";
+                    } else {
+                        echo "--";
+                    }
                     ?></p>
                     <div class="progresso-bar">
                         <div class="progresso" style="width: <?php echo $sono_percentual; ?>%;"></div>
@@ -253,7 +262,7 @@ $sono_percentual = $sono_meta_minutos > 0 ? min(100, ($sono_total_minutos / $son
 
                 <!-- Pasta Progresso -->
                 <div class="pasta">
-                     <div class="pasta-header">
+                    <div class="pasta-header">
                         <i class="fa-solid fa-arrows-left-right"></i>
                     </div>
                     <div class="pasta-content">
@@ -278,7 +287,7 @@ $sono_percentual = $sono_meta_minutos > 0 ? min(100, ($sono_total_minutos / $son
                     </div>
                     <div class="card-grande-footer">
                         <?php if ($data_peso): ?>
-                            <?php 
+                            <?php
                             $data_diff = (time() - strtotime($data_peso)) / 3600; // diferença em horas
                             if ($data_diff < 24) {
                                 echo "Registrado há " . round($data_diff) . " horas";
@@ -295,7 +304,7 @@ $sono_percentual = $sono_meta_minutos > 0 ? min(100, ($sono_total_minutos / $son
 
                 <!-- Card Dica -->
                 <div class="card-pequeno">
-                     <div class="pasta-header">
+                    <div class="pasta-header">
                         <i class="fa-solid fa-arrows-left-right"></i>
                     </div>
                     <div class="pasta-content">
@@ -303,9 +312,9 @@ $sono_percentual = $sono_meta_minutos > 0 ? min(100, ($sono_total_minutos / $son
                     </div>
                 </div>
 
-                 <!-- Card Nutrição -->
+                <!-- Card Nutrição -->
                 <div class="card-pequeno">
-                     <div class="pasta-header">
+                    <div class="pasta-header">
                         <i class="fa-solid fa-arrows-left-right"></i>
                     </div>
                     <div class="pasta-content">
@@ -317,13 +326,15 @@ $sono_percentual = $sono_meta_minutos > 0 ? min(100, ($sono_total_minutos / $son
     </main>
 
     <nav class="navbar">
-        <a href="dashboard.php" class="nav-link active"><i class="fas fa-home icon"></i> <span class="text">Home</span></a>
+        <a href="dashboard.php" class="nav-link active"><i class="fas fa-home icon"></i> <span
+                class="text">Home</span></a>
         <a href="#" class="nav-link"><i class="fas fa-dumbbell icon"></i> <span class="text">Treinos</span></a>
-        <a href="progresso.php" class="nav-link"><i class="fas fa-chart-line icon"></i> <span class="text">Progresso</span></a>
-        <a href="#" class="nav-link"><i class="fas fa-brain icon"></i> <span class="text">IA</span></a>
+        <a href="progresso.php" class="nav-link"><i class="fas fa-chart-line icon"></i> <span
+                class="text">Progresso</span></a>
+        <a href="chatbot.php" class="nav-link"><i class="fas fa-robot icon"></i> <span class="text">Chatbot</span></a>
         <a href="perfil.php" class="nav-link"><i class="fas fa-user icon"></i> <span class="text">Perfil</span></a>
     </nav>
 
 </body>
-</html>
 
+</html>
