@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Verifica se o usuário está logado
+// Verifica se o utilizador está logado
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
@@ -30,11 +30,11 @@ if ($row['total'] > 0) {
 // Processar seleção de nível
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nivel = $_POST['nivel'] ?? '';
-    
+
     if (!empty($nivel)) {
         // Definir desafios/hábitos baseados no nível
         $desafios = [];
-        
+
         switch ($nivel) {
             case 'iniciante':
                 $desafios = [
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ['descricao' => 'Caminhar 5.000 passos', 'tipo' => 'Exercício', 'meta_diaria' => 5000],
                 ];
                 break;
-                
+
             case 'intermediario':
                 $desafios = [
                     ['descricao' => 'Beber 2.5L de água', 'tipo' => 'Saúde', 'meta_diaria' => 2.5],
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ['descricao' => 'Correr 3km', 'tipo' => 'Exercício', 'meta_diaria' => 3],
                 ];
                 break;
-                
+
             case 'avancado':
                 $desafios = [
                     ['descricao' => 'Beber 3L de água', 'tipo' => 'Saúde', 'meta_diaria' => 3.0],
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ['descricao' => 'Treinar 45 minutos', 'tipo' => 'Exercício', 'meta_diaria' => 45],
                 ];
                 break;
-                
+
             case 'spartano':
                 $desafios = [
                     ['descricao' => 'Beber 3.5L de água', 'tipo' => 'Saúde', 'meta_diaria' => 3.5],
@@ -78,12 +78,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ];
                 break;
         }
-        
+
         // Criar hábitos no banco de dados
         $sql_insert = "INSERT INTO habito (id_user, descricao, tipo, meta_diaria) VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql_insert);
         $criados = 0;
-        
+
         foreach ($desafios as $desafio) {
             $stmt->bind_param("issd", $user_id, $desafio['descricao'], $desafio['tipo'], $desafio['meta_diaria']);
             if ($stmt->execute()) {
@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         $stmt->close();
-        
+
         // Definir meta de água baseada no nível
         $meta_agua = 3.0;
         switch ($nivel) {
@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $meta_agua = 3.5;
                 break;
         }
-        
+
         // Salvar meta de água
         try {
             $sql_meta = "INSERT INTO meta_usuario (id_user, tipo, valor) VALUES (?, 'agua', ?) 
@@ -120,13 +120,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (Exception $e) {
             // Ignora se a tabela não existir ainda
         }
-        
+
         if ($criados > 0) {
             // Redireciona para dashboard
             header("Location: dashboard.php");
             exit;
         } else {
-            $mensagem = "❌ Erro ao criar desafios. Tente novamente.";
+            $mensagem = "❌ Erro ao criar desafios. Tenta novamente.";
         }
     }
 }
@@ -135,7 +135,8 @@ $conn->close();
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -146,21 +147,23 @@ $conn->close();
     <link rel="stylesheet" href="css/onboarding.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Inter:wght@400;700&display=swap"
+        rel="stylesheet">
 </head>
+
 <body class="login-page">
     <main class="main-login">
         <div class="onboarding-container">
             <div class="onboarding-box">
                 <h1>Bem-vindo ao BerserkFit! 🎯</h1>
-                <p>Selecione o seu nível para criarmos um plano de desafios personalizado:</p>
-                
+                <p>Seleciona o teu nível para criarmos um plano de desafios personalizado:</p>
+
                 <?php if ($mensagem != ""): ?>
                     <div class="mensagem error">
                         <?php echo htmlspecialchars($mensagem); ?>
                     </div>
                 <?php endif; ?>
-                
+
                 <form method="POST" action="onboarding.php" id="formNivel">
                     <div class="niveis-grid">
                         <!-- Iniciante -->
@@ -182,7 +185,7 @@ $conn->close();
                         <label for="intermediario" class="nivel-card">
                             <div class="nivel-icon">💪</div>
                             <h3>Intermediário</h3>
-                            <p>Já tem experiência</p>
+                            <p>Já tens experiência</p>
                             <ul>
                                 <li>2.5L de água</li>
                                 <li>25 flexões</li>
@@ -225,7 +228,7 @@ $conn->close();
                             </ul>
                         </label>
                     </div>
-                    
+
                     <button type="submit" class="btn-continuar" id="btnContinuar" disabled>
                         Continuar
                     </button>
@@ -240,7 +243,7 @@ $conn->close();
         const btnContinuar = document.getElementById('btnContinuar');
 
         niveis.forEach(nivel => {
-            nivel.addEventListener('change', function() {
+            nivel.addEventListener('change', function () {
                 if (this.checked) {
                     btnContinuar.disabled = false;
                 }
@@ -248,5 +251,5 @@ $conn->close();
         });
     </script>
 </body>
-</html>
 
+</html>

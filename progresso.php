@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Verifica se o usuário está logado
+// Verifica se o utilizador está logado
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $quantidade = floatval($_POST['quantidade'] ?? 0);
         $data = $_POST['data'] ?? date('Y-m-d');
 
-        // Verifica se já existe registro para hoje
+        // Verifica se já existe registo para hoje
         $sql = "SELECT id, quantidade FROM agua WHERE id_user = ? AND data = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("is", $user_id, $data);
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            // Atualiza registro existente
+            // Atualiza registo existente
             $row = $result->fetch_assoc();
             $nova_quantidade = $row['quantidade'] + $quantidade;
             $update = "UPDATE agua SET quantidade = ? WHERE id = ?";
@@ -38,14 +38,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt2->close();
             $mensagem = "✅ Água adicionada com sucesso!";
         } else {
-            // Cria novo registro
+            // Cria novo registo
             $insert = "INSERT INTO agua (id_user, quantidade, data) VALUES (?, ?, ?)";
             $stmt2 = $conn->prepare($insert);
             $stmt2->bind_param("ids", $user_id, $quantidade, $data);
             if ($stmt2->execute()) {
-                $mensagem = "✅ Água registrada com sucesso!";
+                $mensagem = "✅ Água registada com sucesso!";
             } else {
-                $mensagem = "❌ Erro ao registrar água.";
+                $mensagem = "❌ Erro ao registar água.";
             }
             $stmt2->close();
         }
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $peso = floatval($_POST['peso'] ?? 0);
         $data = $_POST['data'] ?? date('Y-m-d');
 
-        // Verifica se já existe registro para hoje
+        // Verifica se já existe registo para hoje
         $sql = "SELECT id FROM peso WHERE id_user = ? AND data = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("is", $user_id, $data);
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-            // Atualiza registro existente
+            // Atualiza registo existente
             $row = $result->fetch_assoc();
             $update = "UPDATE peso SET peso = ? WHERE id = ?";
             $stmt2 = $conn->prepare($update);
@@ -71,14 +71,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt2->close();
             $mensagem = "✅ Peso atualizado com sucesso!";
         } else {
-            // Cria novo registro
+            // Cria novo registo
             $insert = "INSERT INTO peso (id_user, peso, data) VALUES (?, ?, ?)";
             $stmt2 = $conn->prepare($insert);
             $stmt2->bind_param("ids", $user_id, $peso, $data);
             if ($stmt2->execute()) {
-                $mensagem = "✅ Peso registrado com sucesso!";
+                $mensagem = "✅ Peso registado com sucesso!";
             } else {
-                $mensagem = "❌ Erro ao registrar peso.";
+                $mensagem = "❌ Erro ao registar peso.";
             }
             $stmt2->close();
         }
@@ -93,9 +93,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $conn->prepare($insert);
         $stmt->bind_param("idsss", $user_id, $calorias, $refeicao, $descricao, $data);
         if ($stmt->execute()) {
-            $mensagem = "✅ Refeição registrada com sucesso!";
+            $mensagem = "✅ Refeição registada com sucesso!";
         } else {
-            $mensagem = "❌ Erro ao registrar refeição.";
+            $mensagem = "❌ Erro ao registar refeição.";
         }
         $stmt->close();
     } elseif ($acao === 'criar_habito') {
@@ -108,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $conn->prepare($insert);
             $stmt->bind_param("isds", $user_id, $descricao, $meta_diaria, $tipo);
             if ($stmt->execute()) {
-                $mensagem = "✅ Rotina criado com sucesso!";
+                $mensagem = "✅ Rotina criada com sucesso!";
             } else {
                 $mensagem = "❌ Erro ao criar Rotina.";
             }
@@ -182,7 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $conn->prepare($delete);
         $stmt->bind_param("ii", $habito_id, $user_id);
         if ($stmt->execute()) {
-            $mensagem = "✅ Rotina removido com sucesso!";
+            $mensagem = "✅ Rotina removida com sucesso!";
         } else {
             $mensagem = "❌ Erro ao remover Rotina.";
         }
@@ -320,7 +320,7 @@ $conn->close();
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-PT">
 
 <head>
     <meta charset="UTF-8">
@@ -349,7 +349,7 @@ $conn->close();
         </div>
         <div class="header-greeting">
             <h2>Meu Progresso</h2>
-            <p>Acompanhe sua evolução diária</p>
+            <p>Acompanha a tua evolução diária</p>
         </div>
     </header>
 
@@ -427,19 +427,19 @@ $conn->close();
                                     <?php echo number_format($peso_atual, 1); ?><span class="unidade">kg</span>
                                 </div>
                                 <div class="progresso-percentual">
-                                    Registrado em: <?php echo date('d/m/Y', strtotime($data_peso)); ?>
+                                    Registado em: <?php echo date('d/m/Y', strtotime($data_peso)); ?>
                                 </div>
                             <?php else: ?>
                                 <div class="valor-destaque">
                                     --<span class="unidade">kg</span>
                                 </div>
                                 <div class="progresso-percentual">
-                                    Nenhum registro ainda
+                                    Nenhum registo ainda
                                 </div>
                             <?php endif; ?>
                         </div>
                         <div class="card-progresso">
-                            <h4>Registrar Peso</h4>
+                            <h4>Registar Peso</h4>
                             <form method="POST" class="form-progresso">
                                 <input type="hidden" name="acao" value="adicionar_peso">
                                 <div class="form-group">
@@ -452,7 +452,7 @@ $conn->close();
                                         required>
                                 </div>
                                 <button type="submit" class="btn-adicionar">
-                                    <i class="fas fa-save"></i> Registrar
+                                    <i class="fas fa-save"></i> Registar
                                 </button>
                             </form>
                         </div>
@@ -478,13 +478,13 @@ $conn->close();
                             </div>
                         </div>
                         <div class="card-progresso">
-                            <h4>Registrar Refeição</h4>
+                            <h4>Registar Refeição</h4>
                             <form method="POST" class="form-progresso">
                                 <input type="hidden" name="acao" value="adicionar_alimentacao">
                                 <div class="form-group">
                                     <label for="refeicao">Refeição</label>
                                     <select id="refeicao" name="refeicao" required>
-                                        <option value="Café da Manhã">Café da Manhã</option>
+                                        <option value="Café da Manhã">Pequeno-almoço</option>
                                         <option value="Lanche da Manhã">Lanche da Manhã</option>
                                         <option value="Almoço">Almoço</option>
                                         <option value="Lanche da Tarde">Lanche da Tarde</option>
@@ -523,7 +523,7 @@ $conn->close();
                 </div>
                 <div class="categoria-content">
 
-                    <!-- Formulário para criar novo Rotina -->
+                    <!-- Formulário para criar nova Rotina -->
 
                     <div class="card-progresso" style="margin-bottom: 25px;">
                         <h4>Criar Nova Rotina</h4>
@@ -572,7 +572,7 @@ $conn->close();
                                     </div>
                                     <div class="checklist-actions">
                                         <form method="POST" style="display: inline;"
-                                            onsubmit="return confirm('Tem certeza que deseja remover este desafio?');">
+                                            onsubmit="return confirm('Tem a certeza que deseja remover este desafio?');">
                                             <input type="hidden" name="acao" value="deletar_habito">
                                             <input type="hidden" name="habito_id" value="<?php echo $habito['id_habito']; ?>">
                                             <button type="submit" class="btn-icon delete" title="Remover Desafio">
@@ -585,7 +585,8 @@ $conn->close();
                         </div>
                     <?php else: ?>
                         <p style="text-align: center; color: var(--cor-texto); opacity: 0.7; padding: 20px;">
-                            Nenhum desafio criado ainda. Crie um Rotina acima ou complete o onboarding para receber desafios
+                            Nenhum desafio criado ainda. Crie uma Rotina acima ou complete o onboarding para receber
+                            desafios
                             automáticos!
                         </p>
                     <?php endif; ?>
@@ -610,7 +611,7 @@ $conn->close();
                         value="<?php echo $agua_meta; ?>" required>
                 </div>
                 <button type="submit" class="btn-adicionar">
-                    <i class="fas fa-save"></i> Salvar Meta
+                    <i class="fas fa-save"></i> Guardar Meta
                 </button>
             </form>
         </div>
@@ -664,7 +665,7 @@ $conn->close();
     </script>
 
     <nav class="navbar">
-        <a href="dashboard.php" class="nav-link"><i class="fas fa-home icon"></i> <span class="text">Home</span></a>
+        <a href="dashboard.php" class="nav-link"><i class="fas fa-home icon"></i> <span class="text">Início</span></a>
         <a href="#" class="nav-link"><i class="fas fa-dumbbell icon"></i> <span class="text">Treinos</span></a>
         <a href="progresso.php" class="nav-link active"><i class="fas fa-chart-line icon"></i> <span
                 class="text">Progresso</span></a>

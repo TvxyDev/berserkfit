@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 
 <head>
   <meta charset="UTF-8" />
@@ -17,7 +17,7 @@
   <header>
     <nav>
       <div class="logotipo">
-        <img src="assets/logotipo1.png" alt="Logotipo BerserkFit" />
+        <img src="assets/logotipo1.png" alt="Logótipo BerserkFit" />
       </div>
       <button class="menu-toggle" id="menuToggle" aria-label="Menu">
         <i class="fas fa-bars"></i>
@@ -28,30 +28,30 @@
         <li><a href="#funcionalidades">Funcionalidades</a></li>
         <li><a href="#planos">Planos</a></li>
         <li><a href="#sobre">Sobre</a></li>
-        <li><a href="#depoimentos">Depoimentos</a></li>
-        <li><a href="#contato">Contato</a></li>
-        <li class="botao-login-mobile"><a href="login.php" class="botao-login">Login</a></li>
+        <li><a href="#depoimentos">Testemunhos</a></li>
+        <li><a href="#contato">Contacto</a></li>
+        <li class="botao-login-mobile"><a href="login.php" class="botao-login">Entrar</a></li>
       </ul>
-      <a href="login.php" class="botao-login botao-login-desktop">Login</a>
+      <a href="login.php" class="botao-login botao-login-desktop">Entrar</a>
     </nav>
   </header>
 
   <main>
-    <section id="inicio">
+    <section id="inicio" class="hero-section1">
       <div class="heroi-container">
         <div class="heroi-texto">
           <h1 class="fade-in-element">BerserkFit</h1>
           <p class="subtitulo-heroi fade-in-element">
-            "O app de treino que acompanha sua evolução, planeja seus treinos
-            e mantém sua disciplina no gym."
+            "A app de treino que acompanha a tua evolução, planeia os teus treinos
+            e mantém a tua disciplina no ginásio."
           </p>
           <ul class="heroi-lista fade-in-element">
             <li>
               <img src="assets/checkmark.svg" alt="Checkmark" />
-              Acompanhamento de progresso
+              Acompanhamento do progresso
             </li>
             <li>
-              <img src="assets/checkmark.svg" alt="Checkmark" /> Planejador de
+              <img src="assets/checkmark.svg" alt="Checkmark" /> Planeador de
               treinos
             </li>
             <li>
@@ -62,13 +62,13 @@
           <a href="login.php" class="botao-heroi fade-in-element">Começar Agora</a>
         </div>
         <div class="heroi-imagem fade-in-element">
-          <img src="assets/pessoa.png" alt="Pessoa se exercitando" />
+          <img src="assets/pessoa.png" alt="Pessoa a exercitar-se" />
         </div>
       </div>
     </section>
 
     <section id="funcionalidades" class="fade-in-element">
-      <h2>Um Arsenal Para Sua Evolução</h2>
+      <h2>Um Arsenal Para a Tua Evolução</h2>
       <p class="subtitulo">
         Ferramentas inteligentes para um treino disciplinado e motivador.
       </p>
@@ -77,30 +77,30 @@
           <div class="cartao-icone">
             <img src="assets/checklist.svg" alt="Ícone Checklist" />
           </div>
-          <h3>Checklist Diário</h3>
+          <h3>Checklist Diária</h3>
           <p>
-            Crie e personalize seu checklist diário para forjar disciplina e
-            acompanhar seu progresso.
+            Cria e personaliza a tua checklist diária para forjar disciplina e
+            acompanhar o teu progresso.
           </p>
         </div>
         <div class="cartao fade-in-element">
           <div class="cartao-icone">
-            <img src="assets/bot.svg" alt="Ícone Bot IA" />
+            <img src="assets/bot.svg" alt="Ícone ChatBot IA" />
           </div>
           <h3>Gerador de Treinos IA</h3>
           <p>
-            Obtenha treinos personalizados com nosso chatbot, adaptados ao seu
+            Obtém treinos personalizados com o nosso chatbot, adaptados ao teu
             nível e equipamento.
           </p>
         </div>
         <div class="cartao fade-in-element">
           <div class="cartao-icone">
-            <img src="assets/bell.svg" alt="Ícone Sino de Notificação" />
+            <img src="assets/bell.svg" alt="Ícone de Sino de Notificação" />
           </div>
           <h3>Notificações Motivacionais</h3>
           <p>
-            Receba lembretes e mensagens de encorajamento para manter o foco
-            em seus objetivos.
+            Recebe lembretes e mensagens de encorajamento para manter o foco
+            nos teus objetivos.
           </p>
         </div>
       </div>
@@ -109,7 +109,7 @@
     <section id="planos" class="fade-in-element">
       <h2>Planos para Guerreiros</h2>
       <p class="subtitulo">
-        Escolha o arsenal que te levará à vitória. Comece de graça.
+        Escolhe o arsenal que te levará à vitória. Começa grátis.
       </p>
       <div class="grade-precos">
         <div class="cartao-preco fade-in-element">
@@ -123,7 +123,7 @@
             </li>
             <li>
               <img src="assets/checkmark.svg" alt="Checkmark" /> Checklist
-              diário para 5 tarefas
+              diária para 5 tarefas
             </li>
             <li>
               <img src="assets/checkmark.svg" alt="Checkmark" /> Acesso à
@@ -134,7 +134,7 @@
               treinos
             </li>
           </ul>
-          <button>Comece de Graça</button>
+          <button>Começa Grátis</button>
         </div>
         <div class="cartao-preco destacado fade-in-element">
           <h3>Gladiator</h3>
@@ -154,10 +154,10 @@
             </li>
             <li>
               <img src="assets/checkmark.svg" alt="Checkmark" /> Checklist
-              diário ilimitado
+              diária ilimitada
             </li>
           </ul>
-          <button class="botao-destacado">Seja um Gladiador</button>
+          <button class="botao-destacado">Sê um Gladiador</button>
         </div>
         <div class="cartao-preco fade-in-element">
           <h3>Berserker</h3>
@@ -180,7 +180,7 @@
               antecipado a novas funcionalidades
             </li>
           </ul>
-          <button>Liberte o Berserker</button>
+          <button>Liberta o Berserker</button>
         </div>
       </div>
     </section>
@@ -188,71 +188,56 @@
     <section id="sobre" class="fade-in-element">
       <div class="sobre-container">
         <div class="missao fade-in-element">
-          <h2>Nossa Missão</h2>
+          <h2>A Nossa Missão</h2>
           <p>
-            No BerserkFit, acreditamos que a verdadeira força nasce da
-            disciplina. Nossa missão é fornecer as ferramentas para que você
-            construa não apenas um físico poderoso, mas uma mente resiliente
+            Na BerserkFit, acreditamos que a verdadeira força nasce da
+            disciplina. A nossa missão é fornecer as ferramentas para que
+            construas não apenas um físico poderoso, mas uma mente resiliente
             como a de um guerreiro espartano.
           </p>
           <p>
-            Combinamos treino inteligente e motivação implacável para que você
-            possa superar seus limites e alcançar a evolução contínua.
-            Junte-se a nós nesta jornada de autotransformação.
+            Combinamos treino inteligente a motivação implacável para que
+            possas superar os teus limites e alcançar a evolução contínua.
+            Junta-te a nós nesta jornada de autotransformação.
           </p>
         </div>
         <div class="legiao fade-in-element">
-          <h2>Nossa Legião</h2>
+          <h2>A Nossa Legião</h2>
           <div class="grade-legiao">
             <div class="membro-legiao fade-in-element">
               <img
                 src="https://image.thum.io/get/auth/61665-3592a5b65f5a4aeaa535035f3755b40d/width/300/https://raw.githubusercontent.com/miguelsmuller/dev-berserkfit/main/assets/lykos.png"
                 alt="Retrato de Lykos, o fundador do BerserkFit" />
-              <h3>Lykos</h3>
-              <p>Fundador &<br />Estrategista Chefe</p>
-            </div>
-            <div class="membro-legiao fade-in-element">
-              <img
-                src="https://image.thum.io/get/auth/61665-3592a5b65f5a4aeaa535035f3755b40d/width/300/https://raw.githubusercontent.com/miguelsmuller/dev-berserkfit/main/assets/kassandra.png"
-                alt="Retrato de Kassandra, a desenvolvedora do BerserkFit" />
-              <h3>Kassandra</h3>
-              <p>Desenvolvedora<br />& Mestre de Armas</p>
-            </div>
-            <div class="membro-legiao fade-in-element">
-              <img
-                src="https://image.thum.io/get/auth/61665-3592a5b65f5a4aeaa535035f3755b40d/width/300/https://raw.githubusercontent.com/miguelsmuller/dev-berserkfit/main/assets/stentor.png"
-                alt="Retrato de Stentor, o designer do BerserkFit" />
-              <h3>Stentor</h3>
-              <p>Designer de UI/UX &<br />Artesão</p>
-            </div>
-          </div>
+              <h3>Victor Santos</h3>
+              <p>Fundador &<br />Desenvolvedor</p>
+           </div>
         </div>
       </div>
     </section>
 
     <section id="depoimentos" class="fade-in-element">
-      <h2>O Que Dizem Nossos Guerreiros</h2>
+      <h2>O Que Dizem Os Nossos Guerreiros</h2>
       <div class="grade-depoimentos">
         <div class="cartao-depoimento fade-in-element">
-          <img src="https://i.pravatar.cc/100?u=1" alt="Avatar de um usuário" />
+          <img src="https://i.pravatar.cc/100?u=1" alt="Avatar de um utilizador" />
           <p>
-            "O BerserkFit mudou meu jogo. A disciplina que eu precisava, na
+            "O BerserkFit mudou o meu jogo. A disciplina que eu precisava, na
             palma da minha mão."
           </p>
           <h3>Marcus</h3>
           <span>Gladiador</span>
         </div>
         <div class="cartao-depoimento fade-in-element">
-          <img src="https://i.pravatar.cc/100?u=2" alt="Avatar de um usuário" />
+          <img src="https://i.pravatar.cc/100?u=2" alt="Avatar de um utilizador" />
           <p>
-            "Finalmente um app que entende a mentalidade de um atleta. Os
+            "Finalmente uma app que entende a mentalidade de um atleta. Os
             treinos são insanos!"
           </p>
           <h3>Helena</h3>
           <span>Berserker</span>
         </div>
         <div class="cartao-depoimento fade-in-element">
-          <img src="https://i.pravatar.cc/100?u=3" alt="Avatar de um usuário" />
+          <img src="https://i.pravatar.cc/100?u=3" alt="Avatar de um utilizador" />
           <p>
             "Comecei com o plano Spartan e já sinto a diferença. A comunidade
             é um grande apoio."
@@ -269,16 +254,16 @@
       <div class="footer-column">
         <h3>BerserkFit</h3>
         <p>
-          Subscreva a nossa newsletter para se manter atualizado sobre
+          Subscreve a nossa newsletter para te manteres atualizado sobre
           funcionalidades e lançamentos.
         </p>
         <form class="newsletter-form">
-          <input type="email" placeholder="Insira o seu email" />
+          <input type="email" placeholder="Insere o teu e-mail" />
           <button type="submit">Subscrever</button>
         </form>
         <p class="newsletter-disclaimer">
-          Ao subscrever, concorda com a nossa Política de Privacidade e
-          consente em receber atualizações da nossa empresa.
+          Ao subscreveres, concordas com a nossa Política de Privacidade e
+          consentes em receber atualizações da nossa empresa.
         </p>
       </div>
       <div class="footer-column">
@@ -288,12 +273,12 @@
           <li><a href="#funcionalidades">Funcionalidades</a></li>
           <li><a href="#planos">Planos</a></li>
           <li><a href="#sobre">Sobre</a></li>
-          <li><a href="#depoimentos">Depoimentos</a></li>
-          <li><a href="#contato">Contato</a></li>
+          <li><a href="#depoimentos">Testemunhos</a></li>
+          <li><a href="#contato">Contacto</a></li>
         </ul>
       </div>
       <div class="footer-column">
-        <h4>Siga-nos</h4>
+        <h4>Segue-nos</h4>
         <div class="social-icons">
           <a href="#"><img src="assets/facebook.svg" alt="Facebook" /> Facebook</a>
           <a href="#"><img src="assets/instagram.svg" alt="Instagram" /> Instagram</a>
@@ -311,7 +296,7 @@
     </div>
   </footer>
 
-  <script src="main.js"></script>
+  <script src="js/main.js"></script>
 </body>
 
 </html>

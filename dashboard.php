@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Verifica se o usuário está logado
+// Verifica se o utilizador está logado
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
@@ -144,7 +144,7 @@ $sono_percentual = $sono_meta_minutos > 0 ? min(100, ($sono_total_minutos / $son
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-PT">
 
 <head>
     <meta charset="UTF-8">
@@ -274,7 +274,7 @@ $sono_percentual = $sono_meta_minutos > 0 ? min(100, ($sono_total_minutos / $son
                 <!-- Card Peso Corporal -->
                 <div class="card-grande">
                     <div class="card-grande-header">
-                        <span>Body weight</span>
+                        <span>Peso Corporal</span>
                         <i class="fa-solid fa-arrows-left-right"></i>
                     </div>
                     <div class="card-grande-body">
@@ -290,14 +290,14 @@ $sono_percentual = $sono_meta_minutos > 0 ? min(100, ($sono_total_minutos / $son
                             <?php
                             $data_diff = (time() - strtotime($data_peso)) / 3600; // diferença em horas
                             if ($data_diff < 24) {
-                                echo "Registrado há " . round($data_diff) . " horas";
+                                echo "Registado há " . round($data_diff) . " horas";
                             } else {
                                 $dias = round($data_diff / 24);
-                                echo "Registrado há " . $dias . " dia" . ($dias > 1 ? "s" : "");
+                                echo "Registado há " . $dias . " dia" . ($dias > 1 ? "s" : "");
                             }
                             ?>
                         <?php else: ?>
-                            <span>Nenhum registro ainda</span>
+                            <span>Nenhum registo ainda</span>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -327,7 +327,7 @@ $sono_percentual = $sono_meta_minutos > 0 ? min(100, ($sono_total_minutos / $son
 
     <nav class="navbar">
         <a href="dashboard.php" class="nav-link active"><i class="fas fa-home icon"></i> <span
-                class="text">Home</span></a>
+                class="text">Início</span></a>
         <a href="#" class="nav-link"><i class="fas fa-dumbbell icon"></i> <span class="text">Treinos</span></a>
         <a href="progresso.php" class="nav-link"><i class="fas fa-chart-line icon"></i> <span
                 class="text">Progresso</span></a>

@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Verifica se o usuário está logado
+// Verifica se o utilizador está logado
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
@@ -11,7 +11,7 @@ require 'ligacao.php';
 
 $admin_id = $_SESSION['user_id'];
 
-// Verifica se o usuário é Admin
+// Verifica se o utilizador é Admin
 $sql_check = "SELECT tipo_usuario FROM user WHERE id_user = ?";
 $stmt = $conn->prepare($sql_check);
 $stmt->bind_param("i", $admin_id);
@@ -32,7 +32,7 @@ if (!isset($admin_data['tipo_usuario']) || $admin_data['tipo_usuario'] !== 'Admi
     exit;
 }
 
-// Buscar ID do usuário a visualizar
+// Buscar ID do utilizador a visualizar
 $user_id_view = intval($_GET['id'] ?? 0);
 
 if ($user_id_view == 0) {
@@ -40,7 +40,7 @@ if ($user_id_view == 0) {
     exit;
 }
 
-// Buscar dados completos do usuário
+// Buscar dados completos do utilizador
 $user_data = null;
 $sql_user = "SELECT * FROM user WHERE id_user = ?";
 $stmt = $conn->prepare($sql_user);
@@ -56,7 +56,7 @@ if ($result->num_rows === 0) {
 $user_data = $result->fetch_assoc();
 $stmt->close();
 
-// Buscar hábitos do usuário
+// Buscar hábitos do utilizador
 $habitos = [];
 $sql_habitos = "SELECT id_habito, descricao, tipo, meta_diaria FROM habito WHERE id_user = ? ORDER BY id_habito DESC";
 $stmt = $conn->prepare($sql_habitos);
@@ -68,7 +68,7 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-// Buscar registros de água (últimos 30 dias)
+// Buscar registos de água (últimos 30 dias)
 $registros_agua = [];
 $sql_agua = "SELECT data, SUM(quantidade) as total FROM agua WHERE id_user = ? AND data >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) GROUP BY data ORDER BY data DESC LIMIT 30";
 $stmt = $conn->prepare($sql_agua);
@@ -80,7 +80,7 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-// Buscar registros de peso (últimos 30)
+// Buscar registos de peso (últimos 30)
 $registros_peso = [];
 $sql_peso = "SELECT peso, data FROM peso WHERE id_user = ? ORDER BY data DESC LIMIT 30";
 $stmt = $conn->prepare($sql_peso);
@@ -92,7 +92,7 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-// Buscar registros de alimentação (últimos 30)
+// Buscar registos de alimentação (últimos 30)
 $registros_alimentacao = [];
 $sql_alimentacao = "SELECT calorias, refeicao, descricao, data FROM alimentacao WHERE id_user = ? ORDER BY data DESC LIMIT 30";
 $stmt = $conn->prepare($sql_alimentacao);
@@ -104,7 +104,7 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-// Estatísticas do usuário
+// Estatísticas do utilizador
 $total_agua = 0;
 $total_calorias = 0;
 $peso_atual = null;
@@ -131,19 +131,22 @@ $conn->close();
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes do Usuário - Admin - BerserkFit</title>
+    <title>Detalhes do Utilizador - Admin - BerserkFit</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="css/estilo.css">
+
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/admin_usuario.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Inter:wght@400;700&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
     <div class="admin-container">
         <a href="admin.php" class="back-link">
@@ -151,13 +154,13 @@ $conn->close();
         </a>
 
         <div class="user-header">
-            <h1><i class="fas fa-user"></i> Detalhes do Usuário</h1>
-            
+            <h1><i class="fas fa-user"></i> Detalhes do Utilizador</h1>
+
             <div class="user-header-flex">
                 <div>
-                    <?php 
-                    $foto_usuario = (!empty($user_data['foto']) && file_exists($user_data['foto'])) 
-                        ? $user_data['foto'] 
+                    <?php
+                    $foto_usuario = (!empty($user_data['foto']) && file_exists($user_data['foto']))
+                        ? $user_data['foto']
                         : 'assets/fotos/default-user.png';
                     ?>
                     <img src="<?php echo htmlspecialchars($foto_usuario); ?>" alt="Foto" class="user-photo-large">
@@ -174,7 +177,7 @@ $conn->close();
                     <div class="info-item">
                         <label>Telefone</label>
                         <div class="value">
-                            <?php 
+                            <?php
                             if (!empty($user_data['ddd']) && !empty($user_data['telefone'])) {
                                 echo htmlspecialchars($user_data['ddd']) . " " . htmlspecialchars($user_data['telefone']);
                             } else {
@@ -186,7 +189,7 @@ $conn->close();
                     <div class="info-item">
                         <label>Data de Nascimento</label>
                         <div class="value">
-                            <?php 
+                            <?php
                             if (!empty($user_data['data_nascimento'])) {
                                 echo date('d/m/Y', strtotime($user_data['data_nascimento']));
                             } else {
@@ -202,7 +205,7 @@ $conn->close();
                     <div class="info-item">
                         <label>Data de Registo</label>
                         <div class="value">
-                            <?php 
+                            <?php
                             if (!empty($user_data['data_registo'])) {
                                 try {
                                     // Tenta converter para timestamp
@@ -226,7 +229,7 @@ $conn->close();
                         </div>
                     </div>
                     <div class="info-item">
-                        <label>Tipo de Usuário</label>
+                        <label>Tipo de Utilizador</label>
                         <div class="value">
                             <span class="badge-tipo <?php echo strtolower($user_data['tipo_usuario'] ?? 'Usuario'); ?>">
                                 <?php echo htmlspecialchars($user_data['tipo_usuario'] ?? 'Usuario'); ?>
@@ -237,7 +240,7 @@ $conn->close();
             </div>
         </div>
 
-        <!-- Estatísticas do Usuário -->
+        <!-- Estatísticas do Utilizador -->
         <div class="stats-grid">
             <div class="stat-card">
                 <h3>Total de Hábitos</h3>
@@ -254,7 +257,7 @@ $conn->close();
             <div class="stat-card">
                 <h3>Peso Atual</h3>
                 <p class="stat-value">
-                    <?php 
+                    <?php
                     if ($peso_atual) {
                         echo number_format($peso_atual, 1) . " kg";
                     } else {
@@ -291,9 +294,9 @@ $conn->close();
             <?php endif; ?>
         </div>
 
-        <!-- Registros de Água -->
+        <!-- Registos de Água -->
         <div class="admin-section">
-            <h2><i class="fas fa-tint"></i> Registros de Água (Últimos 30 dias)</h2>
+            <h2><i class="fas fa-tint"></i> Registos de Água (Últimos 30 dias)</h2>
             <?php if (!empty($registros_agua)): ?>
                 <table class="data-table">
                     <thead>
@@ -313,12 +316,12 @@ $conn->close();
                 </table>
             <?php else: ?>
                 <p class="empty-message">
-                    Nenhum registro de água encontrado.
+                    Nenhum registo de água encontrado.
                 </p>
             <?php endif; ?>
         </div>
 
-        <!-- Registros de Peso -->
+        <!-- Registos de Peso -->
         <div class="admin-section">
             <h2><i class="fas fa-weight"></i> Registros de Peso (Últimos 30)</h2>
             <?php if (!empty($registros_peso)): ?>
@@ -340,14 +343,14 @@ $conn->close();
                 </table>
             <?php else: ?>
                 <p class="empty-message">
-                    Nenhum registro de peso encontrado.
+                    Nenhum registo de peso encontrado.
                 </p>
             <?php endif; ?>
         </div>
 
-        <!-- Registros de Alimentação -->
+        <!-- Registos de Alimentação -->
         <div class="admin-section">
-            <h2><i class="fas fa-utensils"></i> Registros de Alimentação (Últimos 30)</h2>
+            <h2><i class="fas fa-utensils"></i> Registos de Alimentação (Últimos 30)</h2>
             <?php if (!empty($registros_alimentacao)): ?>
                 <table class="data-table">
                     <thead>
@@ -371,19 +374,20 @@ $conn->close();
                 </table>
             <?php else: ?>
                 <p class="empty-message">
-                    Nenhum registro de alimentação encontrado.
+                    Nenhum registo de alimentação encontrado.
                 </p>
             <?php endif; ?>
         </div>
     </div>
 
     <nav class="navbar">
-        <a href="dashboard.php" class="nav-link"><i class="fas fa-home icon"></i> <span class="text">Home</span></a>
+        <a href="dashboard.php" class="nav-link"><i class="fas fa-home icon"></i> <span class="text">Início</span></a>
         <a href="#" class="nav-link"><i class="fas fa-dumbbell icon"></i> <span class="text">Treinos</span></a>
-        <a href="progresso.php" class="nav-link"><i class="fas fa-chart-line icon"></i> <span class="text">Progresso</span></a>
-        <a href="#" class="nav-link"><i class="fas fa-brain icon"></i> <span class="text">IA</span></a>
+        <a href="progresso.php" class="nav-link"><i class="fas fa-chart-line icon"></i> <span
+                class="text">Progresso</span></a>
+        <a href="chatbot.php" class="nav-link"><i class="fas fa-robot icon"></i> <span class="text">Chatbot</span></a>
         <a href="perfil.php" class="nav-link"><i class="fas fa-user icon"></i> <span class="text">Perfil</span></a>
     </nav>
 </body>
-</html>
 
+</html>

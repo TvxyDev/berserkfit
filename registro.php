@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Valida se as senhas são iguais
     if ($senha !== $confirmar_senha) {
-        $mensagem = "❌ As senhas não coincidem!";
+        $mensagem = "❌ As palavras-passe não coincidem!";
     } else {
         // Gera hash da senha
         $password_hash = password_hash($senha, PASSWORD_DEFAULT);
@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("sssssss", $nome, $email, $password_hash, $ddd, $telefone, $data_nascimento, $genero);
 
         if ($stmt->execute()) {
-            $mensagem = "✅ Conta criada com sucesso! Agora faça login.";
+            $mensagem = "✅ Conta criada com sucesso! Inicie sessão agora.";
             // Redireciona para login
             header("Location: login.php");
             exit;
@@ -52,25 +52,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - BerserkFit</title>
+    <title>Registo - BerserkFit</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="css/estilo.css">
     <link rel="stylesheet" href="css/login.css">
     <link rel="stylesheet" href="css/registro.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Inter:wght@400;700&display=swap"
+        rel="stylesheet">
     <script>
         function validarSenhas() {
             const senha = document.getElementById('senha').value;
             const confirmarSenha = document.getElementById('confirmar_senha').value;
             const errorMsg = document.getElementById('senha-error');
             const confirmarInput = document.getElementById('confirmar_senha');
-            
+
             if (confirmarSenha !== '') {
                 if (senha !== confirmarSenha) {
                     errorMsg.classList.add('show');
@@ -84,33 +86,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             return true;
         }
-        
-        document.addEventListener('DOMContentLoaded', function() {
+
+        document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('senha').addEventListener('input', validarSenhas);
             document.getElementById('confirmar_senha').addEventListener('input', validarSenhas);
-            
-            document.querySelector('form').addEventListener('submit', function(e) {
+
+            document.querySelector('form').addEventListener('submit', function (e) {
                 if (!validarSenhas()) {
                     e.preventDefault();
-                    alert('As senhas não coincidem!');
+                    alert('As palavras-passe não coincidem!');
                 }
             });
         });
     </script>
 </head>
+
 <body class="login-page">
     <header>
         <nav>
             <div class="logotipo">
-                <img src="assets/logotipo1.png" alt="Logotipo BerserkFit">
+                <img src="assets/logotipo1.png" alt="Logótipo BerserkFit">
             </div>
             <ul>
                 <li><a href="index.php#inicio">Início</a></li>
                 <li><a href="index.php#funcionalidades">Funcionalidades</a></li>
                 <li><a href="index.php#planos">Planos</a></li>
                 <li><a href="index.php#sobre">Sobre</a></li>
-                <li><a href="index.php#depoimentos">Depoimentos</a></li>
-                <li><a href="index.php#contato">Contato</a></li>
+                <li><a href="index.php#depoimentos">Testemunhos</a></li>
+                <li><a href="index.php#contato">Contacto</a></li>
             </ul>
         </nav>
     </header>
@@ -128,7 +131,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="login-box">
                 <h1>Crie a sua conta</h1>
                 <?php if ($mensagem != ""): ?>
-                    <p class="mensagem" style="text-align: center; margin-bottom: 15px; color: <?php echo strpos($mensagem, '✅') !== false ? 'green' : 'red'; ?>;"><?php echo $mensagem; ?></p>
+                    <p class="mensagem"
+                        style="text-align: center; margin-bottom: 15px; color: <?php echo strpos($mensagem, '✅') !== false ? 'green' : 'red'; ?>;">
+                        <?php echo $mensagem; ?></p>
                 <?php endif; ?>
                 <form method="POST" action="registro.php">
                     <div class="input-group">
@@ -141,22 +146,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                     <div class="input-group" style="display: flex; gap: 10px;">
                         <div style="flex: 0 0 80px;">
-                            <label for="ddd">DDD</label>
-                            <input type="text" id="ddd" name="ddd" placeholder="21" maxlength="3" pattern="[0-9]{3}" required>
+                            <label for="ddd">Indic.</label>
+                            <input type="text" id="ddd" name="ddd" placeholder="351" maxlength="3" pattern="[0-9]{2,3}"
+                                required>
                         </div>
                         <div style="flex: 1;">
                             <label for="telefone">Telefone</label>
-                            <input type="text" id="telefone" name="telefone" placeholder="987654321" maxlength="9" pattern="[0-9]{8,9}" required>
+                            <input type="text" id="telefone" name="telefone" placeholder="9xxxxxxxx" maxlength="9"
+                                pattern="[0-9]{9}" required>
                         </div>
                     </div>
                     <div class="input-group">
                         <label for="senha">Palavra-passe</label>
-                        <input type="password" id="senha" name="senha" required>
+                        <input type="password" id="senha" name="senha" minlength="8" required>
                     </div>
                     <div class="input-group">
                         <label for="confirmar_senha">Confirmar Palavra-passe</label>
                         <input type="password" id="confirmar_senha" name="confirmar_senha" required>
-                        <div class="senha-error" id="senha-error">As senhas não coincidem!</div>
+                        <div class="senha-error" id="senha-error">As palavras-passe não coincidem!</div>
                     </div>
                     <div class="input-group">
                         <label for="data_nascimento">Data de Nascimento</label>
@@ -174,10 +181,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                     <button type="submit" class="btn-signin">Registar</button>
                 </form>
-                <p class="signup-link">Já tem uma conta? <a href="login.php">Entrar</a></p>
+                <p class="signup-link">Já tem conta? <a href="login.php">Entrar</a></p>
             </div>
         </div>
     </main>
 </body>
-</html>
 
+</html>

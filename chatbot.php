@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Verifica se o usuário está logado
+// Verifica se o utilizador está logado
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
@@ -11,7 +11,7 @@ $user_nome = $_SESSION['user_nome'] ?? 'Guerreiro';
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 
 <head>
     <meta charset="UTF-8">
@@ -41,7 +41,7 @@ $user_nome = $_SESSION['user_nome'] ?? 'Guerreiro';
         </div>
         <div class="header-greeting">
             <h2>Personal Trainer AI 💪</h2>
-            <p>Seu treinador virtual está pronto para ajudar!</p>
+            <p>O teu treinador virtual está pronto para ajudar!</p>
         </div>
     </header>
 
@@ -51,8 +51,8 @@ $user_nome = $_SESSION['user_nome'] ?? 'Guerreiro';
                 <div id="chat-box">
                     <div class="message bot-message">
                         Olá, <?php echo htmlspecialchars($user_nome); ?>! 👋<br>
-                        Sou seu Personal Trainer virtual. 💪<br><br>
-                        Estou aqui para criar o treino perfeito para você. Para começar, qual é o seu principal objetivo
+                        Sou o teu Personal Trainer virtual. 💪<br><br>
+                        Estou aqui para criar o treino perfeito para ti. Para começar, qual é o teu principal objetivo
                         hoje?<br>
                         <em>(Ex: perder peso, ganhar massa, condicionamento...)</em>
                     </div>
@@ -65,7 +65,7 @@ $user_nome = $_SESSION['user_nome'] ?? 'Guerreiro';
                 </div>
 
                 <div class="input-area">
-                    <input type="text" id="user-input" placeholder="Digite sua mensagem..." autocomplete="off">
+                    <input type="text" id="user-input" placeholder="Escreve a tua mensagem..." autocomplete="off">
                     <button id="send-btn">
                         <i class="fas fa-paper-plane"></i>
                     </button>
@@ -75,7 +75,7 @@ $user_nome = $_SESSION['user_nome'] ?? 'Guerreiro';
     </main>
 
     <nav class="navbar">
-        <a href="dashboard.php" class="nav-link"><i class="fas fa-home icon"></i> <span class="text">Home</span></a>
+        <a href="dashboard.php" class="nav-link"><i class="fas fa-home icon"></i> <span class="text">Início</span></a>
         <a href="#" class="nav-link"><i class="fas fa-dumbbell icon"></i> <span class="text">Treinos</span></a>
         <a href="progresso.php" class="nav-link"><i class="fas fa-chart-line icon"></i> <span
                 class="text">Progresso</span></a>

@@ -5,7 +5,7 @@ require 'ligacao.php';
 header('Content-Type: application/json');
 
 if (!isset($_SESSION['user_id'])) {
-    echo json_encode(['success' => false, 'message' => 'Usuário não autenticado.']);
+    echo json_encode(['success' => false, 'message' => 'Utilizador não autenticado.']);
     exit;
 }
 
@@ -51,11 +51,11 @@ try {
     }
 
     $conn->commit();
-    echo json_encode(['success' => true, 'message' => 'Treinos salvos com sucesso!']);
+    echo json_encode(['success' => true, 'message' => 'Treinos guardados com sucesso!']);
 
 } catch (Exception $e) {
     $conn->rollback();
-    echo json_encode(['success' => false, 'message' => 'Erro ao salvar treinos: ' . $e->getMessage()]);
+    echo json_encode(['success' => false, 'message' => 'Erro ao guardar treinos: ' . $e->getMessage()]);
 }
 
 $conn->close();

@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Verifica se o usuário está logado
+// Verifica se o utilizador está logado
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
@@ -12,7 +12,7 @@ require 'ligacao.php';
 $user_id = $_SESSION['user_id'];
 $mensagem = "";
 
-// Verifica se o usuário é Admin
+// Verifica se o utilizador é Admin
 $sql_check = "SELECT tipo_usuario FROM user WHERE id_user = ?";
 $stmt = $conn->prepare($sql_check);
 $stmt->bind_param("i", $user_id);
@@ -40,7 +40,7 @@ $total_registros_agua = 0;
 $total_registros_peso = 0;
 
 try {
-    // Total de usuários
+    // Total de utilizadores
     $sql = "SELECT COUNT(*) as total FROM user";
     $result = $conn->query($sql);
     if ($row = $result->fetch_assoc()) {
@@ -54,14 +54,14 @@ try {
         $total_habitos = $row['total'];
     }
 
-    // Total de registros de água
+    // Total de registos de água
     $sql = "SELECT COUNT(*) as total FROM agua";
     $result = $conn->query($sql);
     if ($row = $result->fetch_assoc()) {
         $total_registros_agua = $row['total'];
     }
 
-    // Total de registros de peso
+    // Total de registos de peso
     $sql = "SELECT COUNT(*) as total FROM peso";
     $result = $conn->query($sql);
     if ($row = $result->fetch_assoc()) {
@@ -71,7 +71,7 @@ try {
     // Ignora erros se tabelas não existirem
 }
 
-// Buscar lista de usuários
+// Buscar lista de utilizadores
 $usuarios = [];
 try {
     $sql = "SELECT id_user, nome, email, tipo_usuario, COALESCE(data_registo, NOW()) as data_registo FROM user ORDER BY data_registo DESC LIMIT 50";
@@ -93,13 +93,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Não permite alterar o próprio tipo
         if ($user_id_alterar == $user_id) {
-            $mensagem = "❌ Você não pode alterar seu próprio tipo de usuário!";
+            $mensagem = "❌ Não podes alterar o teu próprio tipo de utilizador!";
         } else {
             $update = "UPDATE user SET tipo_usuario = ? WHERE id_user = ?";
             $stmt = $conn->prepare($update);
             $stmt->bind_param("si", $novo_tipo, $user_id_alterar);
             if ($stmt->execute()) {
-                $mensagem = "✅ Tipo de usuário atualizado com sucesso!";
+                $mensagem = "✅ Tipo de utilizador atualizado com sucesso!";
                 // Atualiza a lista
                 foreach ($usuarios as &$u) {
                     if ($u['id_user'] == $user_id_alterar) {
@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
             } else {
-                $mensagem = "❌ Erro ao atualizar tipo de usuário.";
+                $mensagem = "❌ Erro ao atualizar tipo de utilizador.";
             }
             $stmt->close();
         }
@@ -118,14 +118,14 @@ $conn->close();
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Administrativo - BerserkFit</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="css/estilo.css">
+
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/admin.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -154,7 +154,7 @@ $conn->close();
         <!-- Estatísticas Gerais -->
         <div class="stats-grid">
             <div class="stat-card">
-                <h3>Total de Usuários</h3>
+                <h3>Total de Utilizadores</h3>
                 <p class="stat-value"><?php echo number_format($total_usuarios); ?></p>
             </div>
             <div class="stat-card">
@@ -162,18 +162,18 @@ $conn->close();
                 <p class="stat-value"><?php echo number_format($total_habitos); ?></p>
             </div>
             <div class="stat-card">
-                <h3>Registros de Água</h3>
+                <h3>Registos de Água</h3>
                 <p class="stat-value"><?php echo number_format($total_registros_agua); ?></p>
             </div>
             <div class="stat-card">
-                <h3>Registros de Peso</h3>
+                <h3>Registos de Peso</h3>
                 <p class="stat-value"><?php echo number_format($total_registros_peso); ?></p>
             </div>
         </div>
 
-        <!-- Gestão de Usuários -->
+        <!-- Gestão de Utilizadores -->
         <div class="admin-section">
-            <h2><i class="fas fa-users"></i> Gestão de Usuários</h2>
+            <h2><i class="fas fa-users"></i> Gestão de Utilizadores</h2>
 
             <?php if (!empty($usuarios)): ?>
                 <table class="users-table">
@@ -228,7 +228,7 @@ $conn->close();
                                 <td>
                                     <?php if ($usuario['id_user'] != $user_id): ?>
                                         <form method="POST" class="form-inline"
-                                            onsubmit="return confirm('Tem certeza que deseja alterar o tipo deste usuário?');">
+                                            onsubmit="return confirm('Tem a certeza que deseja alterar o tipo deste utilizador?');">
                                             <input type="hidden" name="acao" value="alterar_tipo">
                                             <input type="hidden" name="user_id" value="<?php echo $usuario['id_user']; ?>">
                                             <select name="tipo_usuario" required>
@@ -240,7 +240,7 @@ $conn->close();
                                             </button>
                                         </form>
                                     <?php else: ?>
-                                        <span style="color: #999; font-size: 0.9em;">Você</span>
+                                        <span style="color: #999; font-size: 0.9em;">Tu</span>
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -249,14 +249,14 @@ $conn->close();
                 </table>
             <?php else: ?>
                 <p style="text-align: center; color: #999; padding: 20px;">
-                    Nenhum usuário encontrado.
+                    Nenhum utilizador encontrado.
                 </p>
             <?php endif; ?>
         </div>
     </div>
 
     <nav class="navbar">
-        <a href="dashboard.php" class="nav-link"><i class="fas fa-home icon"></i> <span class="text">Home</span></a>
+        <a href="dashboard.php" class="nav-link"><i class="fas fa-home icon"></i> <span class="text">Início</span></a>
         <a href="#" class="nav-link"><i class="fas fa-dumbbell icon"></i> <span class="text">Treinos</span></a>
         <a href="progresso.php" class="nav-link"><i class="fas fa-chart-line icon"></i> <span
                 class="text">Progresso</span></a>
