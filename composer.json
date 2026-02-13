@@ -1,0 +1,15 @@
+{
+    "require": {
+        "google/apiclient": "^2.15",
+        "robthree/twofactorauth": "^3.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        },
+        "audit": {
+            "ignore": ["PKSA-2kqm-ps5x-s4f5"]
+        },
+        "preferred-install": "dist"
+    }
+}

@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'config_google.php';
 
 $mensagem = "";
 
@@ -23,6 +24,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Verifica a senha
         if (password_verify($senha, $user['password_hash'])) {
+            // Verificar se o utilizador tem 2FA ativo
+            $sql_2fa = "SELECT tfa_secret FROM user WHERE id_user = ?";
+            $stmt_2fa = $conn->prepare($sql_2fa);
+            $stmt_2fa->bind_param("i", $user['id_user']);
+            $stmt_2fa->execute();
+            $result_2fa = $stmt_2fa->get_result();
+            $row_2fa = $result_2fa->fetch_assoc();
+            $stmt_2fa->close();
+
+            // Se tem 2FA ativo, redireciona para login_2fa.php
+            if (!empty($row_2fa['tfa_secret'])) {
+                $_SESSION['tfa_user_id'] = $user['id_user'];
+                $_SESSION['tfa_username'] = $user['nome'];
+                header("Location: login_2fa.php");
+                exit;
+            }
+
             // Buscar tipo de utilizador
             $sql_tipo = "SELECT COALESCE(tipo_usuario, 'Usuario') as tipo_usuario FROM user WHERE id_user = ?";
             $stmt_tipo = $conn->prepare($sql_tipo);
@@ -116,7 +134,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <h1>Bem-vindo de volta!</h1>
                 <?php if ($mensagem != ""): ?>
                     <p class="mensagem" style="text-align: center; margin-bottom: 15px; color: red;">
-                        <?php echo $mensagem; ?></p>
+                        <?php echo $mensagem; ?>
+                    </p>
                 <?php endif; ?>
                 <form method="POST" action="login.php">
                     <div class="input-group">
@@ -129,7 +148,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                     <a href="#" class="forgot-password">Esqueceu-se da palavra-passe?</a>
                     <button type="submit" class="btn-signin">Entrar</button>
-                    <button type="button" class="btn-google">
+                    <button type="button" class="btn-google"
+                        onclick="window.location.href='<?php echo $client->createAuthUrl(); ?>'">
                         <img src="assets/google-icon.svg" alt="Google Icon"> Entrar com o Google
                     </button>
                 </form>

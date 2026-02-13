@@ -1,0 +1,348 @@
+<?php
+require "ligacao.php";
+require_once __DIR__ . '/functions_2fa.php';
+
+session_start();
+
+// Verifica se o utilizador está logado
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$user_id = $_SESSION['user_id'];
+$error = '';
+$success = '';
+$secret = null;
+$qr_code_url = null;
+
+// 1. Obter o segredo atual do utilizador
+$stmt = $conn->prepare("SELECT tfa_secret, username FROM user WHERE id_user = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+$current_secret = $user['tfa_secret'];
+$username = $user['username'];
+
+// 2. Lógica para desativar 2FA
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['disable_tfa'])) {
+    $stmt = $conn->prepare("UPDATE user SET tfa_secret = NULL WHERE id_user = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $stmt->close();
+
+    $success = "Autenticação de Dois Fatores desativada com sucesso.";
+    $current_secret = null; // Atualiza o estado
+}
+
+// 3. Lógica para ativar/configurar 2FA
+if (!$current_secret) {
+    // Gerar um segredo temporário para a sessão
+    if (!isset($_SESSION['tfa_temp_secret'])) {
+        $tfa = get_tfa_instance();
+        $secret = $tfa->createSecret();
+        $_SESSION['tfa_temp_secret'] = $secret;
+
+        // Salvar temporariamente na base de dados
+        $stmt = $conn->prepare("UPDATE user SET tfa_secret = ? WHERE id_user = ?");
+        $stmt->bind_param("si", $secret, $user_id);
+        $stmt->execute();
+        $stmt->close();
+    } else {
+        $secret = $_SESSION['tfa_temp_secret'];
+    }
+
+    $qr_code_url = get_tfa_qr_code_url($secret, $username);
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verify_code'])) {
+        $code = trim($_POST['code']);
+        if (verify_tfa_code($secret, $code)) {
+            // O segredo já foi guardado na base de dados
+            unset($_SESSION['tfa_temp_secret']);
+            $success = "Autenticação de Dois Fatores ativada com sucesso!";
+            $current_secret = $secret; // Atualiza o estado
+        } else {
+            $error = "Código de verificação inválido. Tente novamente.";
+        }
+    }
+}
+
+// Se o 2FA estiver ativo, o segredo é o da base de dados
+if ($current_secret) {
+    $secret = $current_secret;
+}
+
+?>
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Configurar 2FA - BerserkFit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Estilos baseados no add_password.php para consistência */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #0f1a3d 50%, #050810 100%);
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.92));
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            border-radius: 12px;
+            padding: 1.6rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1.4rem;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin: 0 auto 0.8rem;
+            box-shadow: 0 6px 15px rgba(6, 182, 212, 0.2);
+        }
+
+        .title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .message {
+            padding: 0.6rem;
+            border-radius: 7px;
+            margin-bottom: 0.8rem;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .message.error {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            color: #fca5a5;
+        }
+
+        .message.success {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: #a7f3d0;
+        }
+
+        .btn {
+            padding: 0.6rem 0.8rem;
+            border-radius: 7px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            color: #000;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(6, 182, 212, 0.25);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: #000;
+            width: 100%;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.25);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.65rem 0.85rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: 7px;
+            color: #cbd5e1;
+            font-size: 0.85rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            background: rgba(15, 23, 42, 0.8);
+            border-color: rgba(6, 182, 212, 0.5);
+            box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.1);
+        }
+
+        .footer {
+            text-align: center;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(6, 182, 212, 0.1);
+        }
+
+        .footer-link {
+            color: #06b6d4;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: #3b82f6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <div class="logo-icon">🔑</div>
+                <h1 class="title">Autenticação de Dois Fatores (2FA)</h1>
+            </div>
+
+            <?php if (!empty($error)): ?>
+                <div class="message error">
+                    <span>⚠️</span>
+                    <span><?= htmlspecialchars($error) ?></span>
+                </div>
+            <?php endif; ?>
+
+            <?php if (!empty($success)): ?>
+                <div class="message success">
+                    <span>✅</span>
+                    <span><?= htmlspecialchars($success) ?></span>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($current_secret): ?>
+                <!-- 2FA ATIVO -->
+                <div class="text-center mb-4">
+                    <p class="text-lg text-green-400 font-semibold mb-2">2FA Ativo</p>
+                    <p class="text-sm text-gray-400">A sua conta está protegida com Autenticação de Dois Fatores.</p>
+                </div>
+                <form method="POST">
+                    <input type="hidden" name="disable_tfa" value="1">
+                    <button type="submit" class="btn btn-danger mt-4"
+                        onclick="return confirm('Tem certeza que deseja desativar o 2FA?');">
+                        ❌ Desativar 2FA
+                    </button>
+                </form>
+
+            <?php else: ?>
+                <!-- 2FA INATIVO - PASSO 1: Exibir QR Code -->
+                <div class="text-center mb-4">
+                    <p class="text-lg text-yellow-400 font-semibold mb-2">Ativar 2FA</p>
+                    <p class="text-sm text-gray-400 mb-4">Para ativar, siga os passos:</p>
+                </div>
+
+                <ol class="list-decimal list-inside text-sm text-gray-300 space-y-3 mb-6">
+                    <li>Instale uma aplicação de autenticação (ex: Google Authenticator, Authy) no seu telemóvel.</li>
+                    <li>Digitalize o código QR abaixo com a aplicação.</li>
+                    <li>Introduza o código de 6 dígitos gerado pela aplicação para confirmar.</li>
+                </ol>
+
+                <div class="flex justify-center mb-6 p-4 bg-white rounded-lg">
+                    <img src="<?= htmlspecialchars($qr_code_url) ?>" alt="QR Code 2FA">
+                </div>
+
+                <div class="text-center mb-4">
+                    <p class="text-xs text-gray-500 mb-2">Ou insira o código manualmente:</p>
+                    <code
+                        class="bg-gray-800 text-yellow-300 p-2 rounded text-sm select-all"><?= htmlspecialchars($secret) ?></code>
+                </div>
+
+                <!-- PASSO 2: Verificar Código -->
+                <form method="POST">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-400 mb-1">Código de 6 Dígitos</label>
+                        <input type="text" name="code" placeholder="123456" required maxlength="6" pattern="\d{6}">
+                    </div>
+                    <input type="hidden" name="verify_code" value="1">
+                    <button type="submit" class="btn btn-primary">
+                        ✅ Verificar e Ativar 2FA
+                    </button>
+                </form>
+
+            <?php endif; ?>
+
+            <div class="footer mt-6">
+                <a href="configuracoes.php" class="footer-link">⬅ Voltar às Configurações</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

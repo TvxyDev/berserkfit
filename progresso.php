@@ -666,7 +666,8 @@ $conn->close();
 
     <nav class="navbar">
         <a href="dashboard.php" class="nav-link"><i class="fas fa-home icon"></i> <span class="text">Início</span></a>
-        <a href="#" class="nav-link"><i class="fas fa-dumbbell icon"></i> <span class="text">Treinos</span></a>
+        <a href="treinos.php" class="nav-link"><i class="fas fa-dumbbell icon"></i> <span
+                class="text">Treinos</span></a>
         <a href="progresso.php" class="nav-link active"><i class="fas fa-chart-line icon"></i> <span
                 class="text">Progresso</span></a>
         <a href="chatbot.php" class="nav-link"><i class="fas fa-robot icon"></i> <span class="text">Chatbot</span></a>

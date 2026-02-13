@@ -10,6 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Pega dados do formulário
     $nome = $_POST['nome'];
     $email = $_POST['email'];
+    $username = $_POST['username'];
     $senha = $_POST['senha'];
     $confirmar_senha = $_POST['confirmar_senha'];
     $ddd = $_POST['ddd'];
@@ -26,10 +27,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Prepara SQL para evitar SQL injection
         // data_registo e tipo_plano são preenchidos automaticamente pelo banco
-        $sql = "INSERT INTO user (nome, email, password_hash, ddd, telefone, data_nascimento, genero) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO user (nome, email, username, password_hash, ddd, telefone, data_nascimento, genero) 
+                VALUES (?, ?, ?, ?, ?, ?, ?,?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sssssss", $nome, $email, $password_hash, $ddd, $telefone, $data_nascimento, $genero);
+        $stmt->bind_param("ssssssss", $nome, $email, $username, $password_hash, $ddd, $telefone, $data_nascimento, $genero);
 
         if ($stmt->execute()) {
             $mensagem = "✅ Conta criada com sucesso! Inicie sessão agora.";
@@ -143,6 +144,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="input-group">
                         <label for="email">Email</label>
                         <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="username">Username</label>
+                        <input type="username" id="username" name="username" required>
                     </div>
                     <div class="input-group" style="display: flex; gap: 10px;">
                         <div style="flex: 0 0 80px;">

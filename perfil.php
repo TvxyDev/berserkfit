@@ -2,6 +2,7 @@
 require "ligacao.php";
 
 session_start();
+setlocale(LC_TIME, 'pt_PT.UTF-8', 'pt_PT', 'portuguese');
 
 // Verifica se o utilizador está logado
 if (!isset($_SESSION['user_id'])) {
@@ -69,59 +70,52 @@ $league_rank = "#12"; // Mock Monthly Rank
 $current_league = "Liga " . ($plano === 'Gratuito' ? 'Spartan' : $plano);
 
 // --- ATUALIZAÇÃO ---
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nome = $_POST['nome'];
-    $ddd = $_POST['ddd'] ?? '';
-    $telefone = $_POST['telefone'] ?? '';
-    $data_nascimento = $_POST['data_nascimento'] ?? '';
-    $genero = $_POST['genero'] ?? '';
-    $remover_foto = isset($_POST['remover_foto']) && $_POST['remover_foto'] == '1';
-
-    $foto = $user['foto'];
-
-    if ($remover_foto) {
-        if (!empty($user['foto']) && file_exists($user['foto']) && !strpos($user['foto'], 'default')) {
-            unlink($user['foto']);
-        }
-        $foto = 'assets/fotos/default-user.png';
-    } elseif (!empty($_FILES['foto']['name'])) {
-        $diretorio = "assets/fotos/";
-        if (!file_exists($diretorio))
-            mkdir($diretorio, 0777, true);
-
-        $fotoNome = time() . "_" . basename($_FILES['foto']['name']);
-        $fotoTmp = $_FILES['foto']['tmp_name'];
-        $caminhoFoto = $diretorio . $fotoNome;
-
-        if (move_uploaded_file($fotoTmp, $caminhoFoto)) {
-            $foto = $caminhoFoto;
-        } else {
-            $mensagem = "❌ Erro ao enviar foto.";
-        }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['nova_foto_perfil']) && !empty($_FILES['nova_foto_perfil']['name'])) {
+    
+    // Configurações
+    $diretorio = "assets/fotos/";
+    if (!file_exists($diretorio)) {
+        mkdir($diretorio, 0777, true);
     }
 
-    if (empty($mensagem)) {
-        $update = "UPDATE user SET nome=?, ddd=?, telefone=?, data_nascimento=?, genero=?, foto=? WHERE id_user=?";
+    $fotoNome = time() . "_" . basename($_FILES['nova_foto_perfil']['name']);
+    $fotoTmp = $_FILES['nova_foto_perfil']['tmp_name'];
+    $caminhoFoto = $diretorio . $fotoNome;
+
+    // Tenta mover o arquivo
+    if (move_uploaded_file($fotoTmp, $caminhoFoto)) {
+        
+        // Remove a antiga se não for default
+        $fotoAntiga = $user['foto'];
+        if (!empty($fotoAntiga) && file_exists($fotoAntiga) && strpos($fotoAntiga, 'default') === false) {
+             unlink($fotoAntiga);
+        }
+
+        // Atualiza no banco
+        $update = "UPDATE user SET foto=? WHERE id_user=?";
         $stmt = $conn->prepare($update);
-        $stmt->bind_param("ssssssi", $nome, $ddd, $telefone, $data_nascimento, $genero, $foto, $id_user);
-
+        $stmt->bind_param("si", $caminhoFoto, $id_user);
+        
         if ($stmt->execute()) {
-            $mensagem = "✅ Dados atualizados!";
-            $user['nome'] = $nome;
-            $user['foto'] = $foto;
-            $user['ddd'] = $ddd;
-            $user['telefone'] = $telefone;
-            $user['data_nascimento'] = $data_nascimento;
-            $user['genero'] = $genero;
+            header("Location: perfil.php?msg=foto_ok");
+            exit;
         } else {
-            $mensagem = "❌ Erro ao atualizar.";
+            $mensagem = "❌ Erro ao atualizar no banco.";
         }
+    } else {
+        $uploadError = $_FILES['nova_foto_perfil']['error'];
+        $mensagem = "❌ Erro ao enviar foto. Código: " . $uploadError;
     }
+} else if (isset($_GET['msg']) && $_GET['msg'] == 'foto_ok') {
+    $mensagem = "✅ Foto de perfil atualizada com sucesso!";
 }
 
+
 // Tratamento de display
-$handle = "@" . strtolower(explode(' ', trim($user['nome']))[0]) . $user['id_user'];
-$data_entrada = isset($user['data_registo']) ? date("F Y", strtotime($user['data_registo'])) : "Novembro 2024";
+$handle = "@" . strtolower(explode(' ', trim($user['username']))[0]);
+$data_entrada = !empty($user['data_registo'])
+    ? strftime('%B %Y', strtotime($user['data_registo']))
+    : 'erro';
 
 ?>
 
@@ -132,7 +126,7 @@ $data_entrada = isset($user['data_registo']) ? date("F Y", strtotime($user['data
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil - BerserkFit</title>
-    
+
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/perfil.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -218,6 +212,38 @@ $data_entrada = isset($user['data_registo']) ? date("F Y", strtotime($user['data
             background-color: #f3f4f6;
             color: var(--cor-texto);
         }
+
+        /* Botão de Configurações (Engrenagem) */
+        .settings-icon-container {
+            position: relative;
+            text-align: right;
+            margin-bottom: -30px;
+            margin-right: 10px;
+            z-index: 10;
+        }
+
+        .btn-settings {
+            background: transparent;
+            color: #1c0c3b;
+            /* Cor destaque */
+            border: none;
+            width: auto;
+            height: auto;
+            display: inline-block;
+            font-size: 28px;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            box-shadow: none;
+            padding: 5px;
+        }
+
+        .btn-settings:hover {
+            background: transparent;
+            color: #4c1d95;
+            transform: rotate(90deg) scale(1.2);
+            filter: drop-shadow(0 0 5px rgba(28, 12, 59, 0.3));
+            box-shadow: none;
+        }
     </style>
 </head>
 
@@ -236,13 +262,29 @@ $data_entrada = isset($user['data_registo']) ? date("F Y", strtotime($user['data
         <div class="profile-container-grid">
             <!-- Coluna Esquerda: Cartão de Perfil -->
             <div class="profile-card">
+                <!-- Botão Configurações acima da foto -->
+                <div class="settings-icon-container">
+                    <a href="configuracoes.php" class="btn-settings" title="Configurações">
+                        <i class="fas fa-cog"></i>
+                    </a>
+                </div>
+
                 <div class="profile-header-img">
                     <?php
-                    $fotoDisplay = !empty($user['foto']) ? $user['foto'] : 'assets/fotos/default-user.png';
+                    $fotoDisplay = (!empty($user['foto']) && file_exists($user['foto'])) ? $user['foto'] : 'assets/fotos/default-user.png';
                     ?>
-                    <img src="<?php echo htmlspecialchars($fotoDisplay); ?>" alt="Foto de Perfil">
-                    <!-- Botão Camera apenas abre o edit mode também -->
-                    <button class="btn-edit-photo" onclick="toggleEditMode()"><i class="fas fa-camera"></i></button>
+                    <img src="<?php echo htmlspecialchars($fotoDisplay); ?>" alt="Foto de Perfil" id="imgPerfilDisplay">
+
+                    <!-- Formulário oculto para upload direto -->
+                    <form action="" method="POST" enctype="multipart/form-data" id="formFotoPerfil">
+                        <input type="file" name="nova_foto_perfil" id="inputFotoPerfil" style="display: none;"
+                            accept="image/*" onchange="document.getElementById('formFotoPerfil').submit()">
+                    </form>
+
+                    <div class="edit-photo-overlay" onclick="document.getElementById('inputFotoPerfil').click()"
+                        title="Alterar Foto">
+                        <i class="fas fa-camera"></i>
+                    </div>
                 </div>
                 <h2><?php echo htmlspecialchars($user['nome']); ?></h2>
                 <p class="handle"><?php echo $handle; ?></p>
@@ -254,8 +296,6 @@ $data_entrada = isset($user['data_registo']) ? date("F Y", strtotime($user['data
                 </div>
 
                 <p class="joined"><i class="far fa-calendar-alt"></i> Membro desde <?php echo $data_entrada; ?></p>
-
-                <button class="btn-save" onclick="toggleEditMode()" id="btn-toggle-text">Editar Perfil</button>
             </div>
 
             <!-- Coluna Direita: Informações Públicas (Padrão) -->
@@ -307,97 +347,16 @@ $data_entrada = isset($user['data_registo']) ? date("F Y", strtotime($user['data
                 </div>
             </div>
 
-            <!-- Coluna Direita (Alternativa): Formulário de Edição (Oculto) -->
-            <div class="settings-panel hidden-panel" id="edit-panel">
-                <h3><i class="fas fa-user-cog"></i> Editar Detalhes</h3>
-                <form method="POST" enctype="multipart/form-data" class="form-perfil">
-                    <input type="file" name="foto" id="foto" style="display:none;">
-                    <input type="hidden" name="remover_foto" id="remover_foto" value="0">
-
-                    <div class="form-group">
-                        <label>Nome Completo</label>
-                        <input type="text" name="nome" value="<?php echo htmlspecialchars($user['nome']); ?>" required>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>DDD</label>
-                            <input type="text" name="ddd" value="<?php echo htmlspecialchars($user['ddd'] ?? ''); ?>">
-                        </div>
-                        <div class="form-group" style="flex:2;">
-                            <label>Telefone</label>
-                            <input type="text" name="telefone"
-                                value="<?php echo htmlspecialchars($user['telefone'] ?? ''); ?>">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>E-mail</label>
-                        <input type="email" value="<?php echo htmlspecialchars($user['email']); ?>" disabled
-                            style="background: #eee;">
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Nascimento</label>
-                            <input type="date" name="data_nascimento"
-                                value="<?php echo htmlspecialchars($user['data_nascimento'] ?? ''); ?>">
-                        </div>
-                        <div class="form-group">
-                            <label>Género</label>
-                            <select name="genero">
-                                <option value="">Selecione...</option>
-                                <option value="Masculino" <?php echo ($user['genero'] == 'Masculino' ? 'selected' : ''); ?>>
-                                    Masculino</option>
-                                <option value="Feminino" <?php echo ($user['genero'] == 'Feminino' ? 'selected' : ''); ?>>
-                                    Feminino</option>
-                                <option value="Outro" <?php echo ($user['genero'] == 'Outro' ? 'selected' : ''); ?>>Outro
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <p style="font-size: 0.8rem; color: #888;">Para alterar a foto, clique no ícone da câmera ao lado da
-                        sua foto de perfil.</p>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn-save">Guardar Alterações</button>
-                        <button type="button" class="btn-save btn-cancel" onclick="toggleEditMode()">Cancelar</button>
-                    </div>
-                </form>
-            </div>
+        </div>
+        </div>
         </div>
 
     </main>
 
-    <script>
-        function toggleEditMode() {
-            const publicPanel = document.getElementById('public-panel');
-            const editPanel = document.getElementById('edit-panel');
-            const btnText = document.getElementById('btn-toggle-text');
-
-            publicPanel.classList.toggle('hidden-panel');
-            editPanel.classList.toggle('hidden-panel');
-
-            if (editPanel.classList.contains('hidden-panel')) {
-                btnText.textContent = 'Editar Perfil';
-            } else {
-                btnText.textContent = 'Ver Estatísticas';
-            }
-        }
-
-        document.querySelector('.btn-edit-photo').addEventListener('click', (e) => {
-            e.preventDefault();
-             const editPanel = document.getElementById('edit-panel');
-            if (editPanel.classList.contains('hidden-panel')) {
-                toggleEditMode();
-            }
-            document.getElementById('foto').click();
-        });
-    </script>
     <nav class="navbar">
         <a href="dashboard.php" class="nav-link"><i class="fas fa-home icon"></i> <span class="text">Início</span></a>
-        <a href="#" class="nav-link"><i class="fas fa-dumbbell icon"></i> <span class="text">Treinos</span></a>
+        <a href="treinos.php" class="nav-link"><i class="fas fa-dumbbell icon"></i> <span
+                class="text">Treinos</span></a>
         <a href="progresso.php" class="nav-link"><i class="fas fa-chart-line icon"></i> <span
                 class="text">Progresso</span></a>
         <a href="chatbot.php" class="nav-link"><i class="fas fa-robot icon"></i> <span class="text">Chatbot</span></a>
