@@ -70,46 +70,55 @@ $league_rank = "#12"; // Mock Monthly Rank
 $current_league = "Liga " . ($plano === 'Gratuito' ? 'Spartan' : $plano);
 
 // --- ATUALIZAÇÃO ---
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['nova_foto_perfil']) && !empty($_FILES['nova_foto_perfil']['name'])) {
-    
-    // Configurações
-    $diretorio = "assets/fotos/";
-    if (!file_exists($diretorio)) {
-        mkdir($diretorio, 0777, true);
-    }
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nome = $_POST['nome'];
+    $ddd = $_POST['ddd'] ?? '';
+    $telefone = $_POST['telefone'] ?? '';
+    $data_nascimento = $_POST['data_nascimento'] ?? '';
+    $genero = $_POST['genero'] ?? '';
+    $remover_foto = isset($_POST['remover_foto']) && $_POST['remover_foto'] == '1';
 
-    $fotoNome = time() . "_" . basename($_FILES['nova_foto_perfil']['name']);
-    $fotoTmp = $_FILES['nova_foto_perfil']['tmp_name'];
-    $caminhoFoto = $diretorio . $fotoNome;
+    $foto = $user['foto'];
 
-    // Tenta mover o arquivo
-    if (move_uploaded_file($fotoTmp, $caminhoFoto)) {
-        
-        // Remove a antiga se não for default
-        $fotoAntiga = $user['foto'];
-        if (!empty($fotoAntiga) && file_exists($fotoAntiga) && strpos($fotoAntiga, 'default') === false) {
-             unlink($fotoAntiga);
+    if ($remover_foto) {
+        if (!empty($user['foto']) && file_exists($user['foto']) && !strpos($user['foto'], 'default')) {
+            unlink($user['foto']);
         }
+        $foto = 'assets/fotos/default-user.png';
+    } elseif (!empty($_FILES['foto']['name'])) {
+        $diretorio = "assets/fotos/";
+        if (!file_exists($diretorio))
+            mkdir($diretorio, 0777, true);
 
-        // Atualiza no banco
-        $update = "UPDATE user SET foto=? WHERE id_user=?";
-        $stmt = $conn->prepare($update);
-        $stmt->bind_param("si", $caminhoFoto, $id_user);
-        
-        if ($stmt->execute()) {
-            header("Location: perfil.php?msg=foto_ok");
-            exit;
+        $fotoNome = time() . "_" . basename($_FILES['foto']['name']);
+        $fotoTmp = $_FILES['foto']['tmp_name'];
+        $caminhoFoto = $diretorio . $fotoNome;
+
+        if (move_uploaded_file($fotoTmp, $caminhoFoto)) {
+            $foto = $caminhoFoto;
         } else {
-            $mensagem = "❌ Erro ao atualizar no banco.";
+            $mensagem = "❌ Erro ao enviar foto.";
         }
-    } else {
-        $uploadError = $_FILES['nova_foto_perfil']['error'];
-        $mensagem = "❌ Erro ao enviar foto. Código: " . $uploadError;
     }
-} else if (isset($_GET['msg']) && $_GET['msg'] == 'foto_ok') {
-    $mensagem = "✅ Foto de perfil atualizada com sucesso!";
-}
 
+    if (empty($mensagem)) {
+        $update = "UPDATE user SET nome=?, ddd=?, telefone=?, data_nascimento=?, genero=?, foto=? WHERE id_user=?";
+        $stmt = $conn->prepare($update);
+        $stmt->bind_param("ssssssi", $nome, $ddd, $telefone, $data_nascimento, $genero, $foto, $id_user);
+
+        if ($stmt->execute()) {
+            $mensagem = "✅ Dados atualizados!";
+            $user['nome'] = $nome;
+            $user['foto'] = $foto;
+            $user['ddd'] = $ddd;
+            $user['telefone'] = $telefone;
+            $user['data_nascimento'] = $data_nascimento;
+            $user['genero'] = $genero;
+        } else {
+            $mensagem = "❌ Erro ao atualizar.";
+        }
+    }
+}
 
 // Tratamento de display
 $handle = "@" . strtolower(explode(' ', trim($user['username']))[0]);
@@ -271,20 +280,9 @@ $data_entrada = !empty($user['data_registo'])
 
                 <div class="profile-header-img">
                     <?php
-                    $fotoDisplay = (!empty($user['foto']) && file_exists($user['foto'])) ? $user['foto'] : 'assets/fotos/default-user.png';
+                    $fotoDisplay = !empty($user['foto']) ? $user['foto'] : 'assets/fotos/default-user.png';
                     ?>
-                    <img src="<?php echo htmlspecialchars($fotoDisplay); ?>" alt="Foto de Perfil" id="imgPerfilDisplay">
-
-                    <!-- Formulário oculto para upload direto -->
-                    <form action="" method="POST" enctype="multipart/form-data" id="formFotoPerfil">
-                        <input type="file" name="nova_foto_perfil" id="inputFotoPerfil" style="display: none;"
-                            accept="image/*" onchange="document.getElementById('formFotoPerfil').submit()">
-                    </form>
-
-                    <div class="edit-photo-overlay" onclick="document.getElementById('inputFotoPerfil').click()"
-                        title="Alterar Foto">
-                        <i class="fas fa-camera"></i>
-                    </div>
+                    <img src="<?php echo htmlspecialchars($fotoDisplay); ?>" alt="Foto de Perfil">
                 </div>
                 <h2><?php echo htmlspecialchars($user['nome']); ?></h2>
                 <p class="handle"><?php echo $handle; ?></p>
