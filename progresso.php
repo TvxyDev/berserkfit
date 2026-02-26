@@ -336,6 +336,7 @@ $conn->close();
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap"
         rel="stylesheet">
+    <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 
 <body>
@@ -479,6 +480,58 @@ $conn->close();
                         </div>
                         <div class="card-progresso">
                             <h4>Registar Refeição</h4>
+
+                            <!-- Barra de pesquisa da Open Food Facts com Imagens -->
+                            <div class="form-group"
+                                style="margin-bottom: 20px; border-bottom: 2px solid var(--cor-secundaria); padding-bottom: 15px;">
+                                <label for="food-search-progresso"><i class="fas fa-search"></i> Pesquisar Alimento
+                                    (Preenchimento Automático)</label>
+                                <div style="display: flex; gap: 10px;">
+                                    <input type="text" id="food-search-progresso"
+                                        placeholder="Ex: Banana, Leite, Pão..."
+                                        style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+                                    <button type="button" onclick="searchFoodProgresso()"
+                                        style="background: var(--cor-destaque); color: var(--cor-primaria); border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer;"
+                                        title="Pesquisar por nome"><i class="fas fa-search"></i></button>
+                                    <button type="button" onclick="startBarcodeScanner()"
+                                        style="background: var(--cor-intermedia); color: var(--cor-destaque); border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: bold;"
+                                        title="Ler Código de Barras"><i class="fas fa-barcode"></i> LER</button>
+                                </div>
+                                <div id="barcode-reader-container"
+                                    style="display: none; margin-top: 15px; background: white; border-radius: 8px; overflow: hidden; border: 1px solid #ccc; padding: 10px; position: relative;">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                        <h5 style="margin: 0; color: var(--cor-destaque);">Aponte a câmara para o código
+                                            de barras</h5>
+                                        <button type="button" onclick="stopBarcodeScanner()"
+                                            style="background: none; border: none; font-size: 1.5em; cursor: pointer; color: #ef4444;">&times;</button>
+                                    </div>
+                                    <div id="reader" style="width: 100%;"></div>
+                                </div>
+                                <div id="food-results-progresso"
+                                    style="margin-top: 10px; max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
+                                    <!-- Resultados aparecerão aqui -->
+                                </div>
+
+                                <!-- Container para Lista de Selecionados -->
+                                <div id="selected-foods-container"
+                                    style="margin-top: 15px; display: none; flex-direction: column; gap: 10px;">
+                                    <h5 style="margin: 0; color: var(--cor-destaque);"><i
+                                            class="fas fa-shopping-basket"></i> Alimentos Selecionados:</h5>
+                                    <div id="selected-foods-list"
+                                        style="display: flex; flex-direction: column; gap: 8px;"></div>
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; background: #e2e8f0; padding: 10px; border-radius: 8px;">
+                                        <strong>Total de Calorias:</strong>
+                                        <span id="selected-foods-total-cals"
+                                            style="color: #ea580c; font-weight: bold; font-size: 1.1em;">0 kcal</span>
+                                    </div>
+                                    <button type="button" onclick="confirmSelectedFoods()"
+                                        style="background: #22c55e; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 600; text-align: center;"><i
+                                            class="fas fa-check"></i> Confirmar</button>
+                                </div>
+                            </div>
+
                             <form method="POST" class="form-progresso">
                                 <input type="hidden" name="acao" value="adicionar_alimentacao">
                                 <div class="form-group">
@@ -662,6 +715,250 @@ $conn->close();
                 toggleCategoria(firstCategory);
             }
         });
+
+        // Função de pesquisa com imagens para o progresso
+        async function searchFoodProgresso() {
+            const query = document.getElementById('food-search-progresso').value.trim();
+            if (!query) return;
+
+            const resultsContainer = document.getElementById('food-results-progresso');
+            resultsContainer.innerHTML = '<p style="text-align:center; padding: 10px;">A procurar...</p>';
+
+            try {
+                // API Open Food Facts
+                const response = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=10`);
+                const data = await response.json();
+
+                if (data.products && data.products.length > 0) {
+                    resultsContainer.innerHTML = '';
+
+                    data.products.forEach(product => {
+                        const productName = product.product_name || 'Produto Sem Nome';
+                        let calories = 0;
+                        let caloriesText = 'N/A';
+
+                        if (product.nutriments) {
+                            if (product.nutriments['energy-kcal_100g'] !== undefined) {
+                                caloriesText = product.nutriments['energy-kcal_100g'] + ' kcal / 100g';
+                                calories = Math.round(product.nutriments['energy-kcal_100g']);
+                            } else if (product.nutriments['energy-kcal_value'] !== undefined) {
+                                caloriesText = product.nutriments['energy-kcal_value'] + ' kcal';
+                                calories = Math.round(product.nutriments['energy-kcal_value']);
+                            }
+                        }
+
+                        // Imagem do produto
+                        const imageUrl = product.image_front_small_url || product.image_url || 'https://via.placeholder.com/60?text=Sem+Foto';
+
+                        // Criar o cartão de resultado
+                        const resultDiv = document.createElement('div');
+                        resultDiv.style.cssText = 'display: flex; gap: 15px; align-items: center; padding: 10px; background: var(--cor-secundaria); border-radius: 8px; cursor: pointer; border: 1px solid #ddd; transition: all 0.2s';
+                        resultDiv.onmouseover = () => resultDiv.style.background = '#e2e8f0';
+                        resultDiv.onmouseout = () => resultDiv.style.background = 'var(--cor-secundaria)';
+
+                        // Ao clicar preenche o formulário
+                        resultDiv.onclick = () => {
+                            addFoodToSelection(productName, calories, imageUrl);
+                        };
+
+                        resultDiv.innerHTML = `
+                            <img src="${imageUrl}" alt="${productName}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; background: #fff;">
+                            <div style="flex: 1;">
+                                <h5 style="margin: 0 0 5px 0; font-size: 14px; color: var(--cor-destaque);">${productName}</h5>
+                                <p style="margin: 0; font-size: 12px; color: #555;"><i class="fas fa-fire" style="color: #ff9900;"></i> ${caloriesText}</p>
+                            </div>
+                        `;
+
+                        resultsContainer.appendChild(resultDiv);
+                    });
+                } else {
+                    resultsContainer.innerHTML = '<p style="text-align:center; padding: 10px;">Nenhum produto encontrado com esse nome.</p>';
+                }
+            } catch (error) {
+                console.error('Erro na pesquisa:', error);
+                resultsContainer.innerHTML = '<p style="text-align:center; padding: 10px; color: red;">Ocorreu um erro ao pesquisar os alimentos.</p>';
+            }
+        }
+
+        // Fechar scanner de código de barras
+        let html5QrcodeScanner = null;
+
+        function stopBarcodeScanner() {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.clear().catch(error => {
+                    console.error("Failed to clear html5QrcodeScanner. ", error);
+                });
+                html5QrcodeScanner = null;
+            }
+            document.getElementById('barcode-reader-container').style.display = 'none';
+        }
+
+        function startBarcodeScanner() {
+            const container = document.getElementById('barcode-reader-container');
+            container.style.display = 'block';
+
+            if (html5QrcodeScanner == null) {
+                html5QrcodeScanner = new Html5QrcodeScanner(
+                    "reader",
+                    { fps: 10, qrbox: { width: 250, height: 150 } },
+                    false
+                );
+
+                html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+            }
+        }
+
+        async function onScanSuccess(decodedText, decodedResult) {
+            // Parar scanner
+            stopBarcodeScanner();
+
+            const resultsContainer = document.getElementById('food-results-progresso');
+            resultsContainer.innerHTML = '<p style="text-align:center; padding: 10px; color: var(--cor-destaque);">A analisar o código de barras ' + decodedText + '...</p>';
+
+            try {
+                // Pesquisar produto por código de barras na Open Food Facts
+                const response = await fetch(`https://world.openfoodfacts.org/api/v0/product/${decodedText}.json`);
+                const data = await response.json();
+
+                if (data.status === 1 && data.product) {
+                    const product = data.product;
+                    const productName = product.product_name || 'Produto Sem Nome';
+                    let calories = 0;
+
+                    if (product.nutriments) {
+                        if (product.nutriments['energy-kcal_100g'] !== undefined) {
+                            calories = Math.round(product.nutriments['energy-kcal_100g']);
+                        } else if (product.nutriments['energy-kcal_value'] !== undefined) {
+                            calories = Math.round(product.nutriments['energy-kcal_value']);
+                        }
+                    }
+
+                    const imageUrl = product.image_front_small_url || product.image_url || 'https://via.placeholder.com/60?text=Sem+Foto';
+
+                    addFoodToSelection(productName, calories, imageUrl);
+
+                    resultsContainer.innerHTML = '<p style="text-align:center; padding: 10px; color: #22c55e;"><i class="fas fa-check-circle"></i> Produto adicionado com sucesso!</p>';
+                    setTimeout(() => { resultsContainer.innerHTML = ''; }, 3000);
+                } else {
+                    resultsContainer.innerHTML = '<p style="text-align:center; padding: 10px; color: #ea580c;">Produto não encontrado na base de dados com esse código de barras.</p>';
+                    setTimeout(() => { resultsContainer.innerHTML = ''; }, 4000);
+                }
+            } catch (error) {
+                console.error('Erro na pesquisa por código de barras:', error);
+                resultsContainer.innerHTML = '<p style="text-align:center; padding: 10px; color: red;">Ocorreu um erro ao comunicar com a base de dados.</p>';
+                setTimeout(() => { resultsContainer.innerHTML = ''; }, 3000);
+            }
+        }
+
+        function onScanFailure(error) {
+            // Pode ignorar o erro do scan failure contínuo (fps)
+        }
+
+        // --- Lógica para múltiplos alimentos (Lista de Compras/Refeição) ---
+        let selectedFoodsList = [];
+
+        function addFoodToSelection(name, caloriesPer100g, imageUrl) {
+            // Adiciona com valor padrão de 100g
+            selectedFoodsList.push({
+                id: Date.now(),
+                name: name,
+                calPer100g: caloriesPer100g > 0 ? caloriesPer100g : 0,
+                grams: 100,
+                img: imageUrl
+            });
+            renderSelectedFoods();
+
+            // Limpa a barra de pesquisa para melhor UX
+            document.getElementById('food-search-progresso').value = '';
+            document.getElementById('food-results-progresso').innerHTML = '';
+        }
+
+        function updateFoodGrams(id, newGrams) {
+            const food = selectedFoodsList.find(f => f.id === id);
+            if (food) {
+                food.grams = parseInt(newGrams) || 0;
+                renderSelectedFoods();
+            }
+        }
+
+        function removeFoodFromSelection(id) {
+            selectedFoodsList = selectedFoodsList.filter(f => f.id !== id);
+            renderSelectedFoods();
+        }
+
+        function renderSelectedFoods() {
+            const container = document.getElementById('selected-foods-container');
+            const list = document.getElementById('selected-foods-list');
+            const totalSpan = document.getElementById('selected-foods-total-cals');
+
+            if (selectedFoodsList.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+
+            container.style.display = 'flex';
+            list.innerHTML = '';
+
+            let totalCals = 0;
+
+            selectedFoodsList.forEach(food => {
+                const itemCals = Math.round((food.calPer100g / 100) * food.grams);
+                totalCals += itemCals;
+
+                const div = document.createElement('div');
+                div.style.cssText = 'display: flex; align-items: center; gap: 10px; background: white; padding: 8px; border-radius: 8px; border: 1px solid #ddd;';
+
+                div.innerHTML = `
+                    <img src="${food.img}" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover; border: 1px solid #eee;">
+                    <div style="flex: 1; min-width: 0;">
+                        <p style="margin: 0; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${food.name}</p>
+                        <p style="margin: 0; font-size: 11px; color: #666;">${food.calPer100g} kcal / 100g</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 5px;">
+                        <input type="number" value="${food.grams}" min="1" max="5000" style="width: 60px; padding: 5px; border: 1px solid #ccc; border-radius: 4px; font-family: var(--fonte-texto);" onchange="updateFoodGrams(${food.id}, this.value)" onkeyup="updateFoodGrams(${food.id}, this.value)">
+                        <span style="font-size: 12px; color: #555;">g</span>
+                    </div>
+                    <div style="width: 65px; text-align: right; font-weight: bold; font-size: 13px; color: var(--cor-destaque);">
+                        ${itemCals} <span style="font-size: 10px; font-weight: normal;">kcal</span>
+                    </div>
+                    <button type="button" onclick="removeFoodFromSelection(${food.id})" style="background: none; border: none; color: #ef4444; cursor: pointer; padding: 5px;"><i class="fas fa-trash"></i></button>
+                `;
+                list.appendChild(div);
+            });
+
+            totalSpan.textContent = totalCals + ' kcal';
+        }
+
+        function confirmSelectedFoods() {
+            if (selectedFoodsList.length === 0) return;
+
+            let descriptions = [];
+            let totalCalories = 0;
+
+            selectedFoodsList.forEach(food => {
+                const itemCals = Math.round((food.calPer100g / 100) * food.grams);
+                totalCalories += itemCals;
+                descriptions.push(`${food.name} (${food.grams}g)`);
+            });
+
+            // Preencher Formulário
+            document.getElementById('descricao').value = descriptions.join(', ');
+            document.getElementById('calorias').value = totalCalories;
+
+            // Mostrar feedback visual
+            const resultsContainer = document.getElementById('food-results-progresso');
+            resultsContainer.innerHTML = '<div style="background: #f0fdf4; color: #166534; padding: 10px; border-radius: 8px; border-left: 4px solid #22c55e;"><i class="fas fa-check-circle"></i> Refeição pronta para ser adicionada no formulário abaixo!</div>';
+
+            // Limpar lista
+            selectedFoodsList = [];
+            renderSelectedFoods();
+
+            // Limpa o feedback passado alguns segundos
+            setTimeout(() => {
+                resultsContainer.innerHTML = '';
+            }, 3000);
+        }
+
     </script>
 
     <nav class="navbar">

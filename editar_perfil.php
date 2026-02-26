@@ -49,7 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (move_uploaded_file($fotoTmp, $caminhoFoto)) {
             $foto = $caminhoFoto;
         } else {
-            $mensagem = "❌ Erro ao enviar foto.";
+            $uploadError = $_FILES['foto']['error'];
+            $mensagem = "❌ Erro ao enviar foto. Código de erro: " . $uploadError;
         }
     }
 
@@ -131,11 +132,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .btn-upload {
             background: var(--cor-secundaria);
             color: var(--cor-texto);
-            padding: 5px 15px;
+            padding: 8px 15px;
             border-radius: 20px;
             font-size: 0.8rem;
             cursor: pointer;
             display: inline-block;
+            margin: 5px;
+            border: 1px solid #ccc;
+            transition: all 0.2s;
+        }
+
+        .btn-upload:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-remove {
+            background: #ffe4e6;
+            color: #991b1b;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: inline-block;
+            margin: 5px;
+            border: 1px solid #fecaca;
+            transition: all 0.2s;
+        }
+
+        .btn-remove:hover {
+            background: #fecaca;
         }
 
         .btn-save {
@@ -177,11 +202,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
 
             <div class="header-edit">
-                <?php $fotoDisplay = !empty($user['foto']) ? $user['foto'] : 'assets/fotos/default-user.png'; ?>
+                <?php $fotoDisplay = (!empty($user['foto']) && file_exists($user['foto'])) ? $user['foto'] : 'assets/fotos/default-user.png'; ?>
                 <img src="<?php echo htmlspecialchars($fotoDisplay); ?>" alt="Foto Atual"
                     onclick="document.getElementById('foto').click()">
                 <br>
-                <span class="btn-upload" onclick="document.getElementById('foto').click()">Alterar Foto</span>
+                <div style="margin-top: 10px;">
+                    <span class="btn-upload" onclick="document.getElementById('foto').click()"><i
+                            class="fas fa-camera"></i> Alterar Foto</span>
+                    <?php if (strpos($fotoDisplay, 'default-user.png') === false): ?>
+                        <span class="btn-remove" onclick="removerFoto()"><i class="fas fa-trash"></i> Remover</span>
+                    <?php endif; ?>
+                </div>
             </div>
 
             <form method="POST" enctype="multipart/form-data">
@@ -221,10 +252,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label>Género</label>
                         <select name="genero">
                             <option value="">Selecione...</option>
-                            <option value="Masculino" <?php echo ($user['genero'] == 'Masculino' ? 'selected' : ''); ?>
-                                >Masculino</option>
-                            <option value="Feminino" <?php echo ($user['genero'] == 'Feminino' ? 'selected' : ''); ?>
-                                >Feminino</option>
+                            <option value="Masculino" <?php echo ($user['genero'] == 'Masculino' ? 'selected' : ''); ?>>
+                                Masculino</option>
+                            <option value="Feminino" <?php echo ($user['genero'] == 'Feminino' ? 'selected' : ''); ?>>
+                                Feminino</option>
                             <option value="Outro" <?php echo ($user['genero'] == 'Outro' ? 'selected' : ''); ?>>Outro
                             </option>
                         </select>
@@ -242,9 +273,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 var reader = new FileReader();
                 reader.onload = function (e) {
                     document.querySelector('.header-edit img').src = e.target.result;
+                    // Se o utilizador carrega nova foto, cancela a remoção
+                    document.getElementById('remover_foto').value = '0';
                 }
                 reader.readAsDataURL(input.files[0]);
             }
+        }
+
+        function removerFoto() {
+            document.getElementById('remover_foto').value = '1';
+            document.querySelector('.header-edit img').src = 'assets/fotos/default-user.png';
+            alert('Foto removida visualmente. Clique em "Guardar Alterações" para confirmar.');
         }
     </script>
 </body>

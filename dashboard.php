@@ -250,7 +250,7 @@ $sono_percentual = $sono_meta_minutos > 0 ? min(100, ($sono_total_minutos / $son
         <section id="dashboard-pastas" class="fade-in-element">
             <div class="grid-pastas">
                 <!-- Pasta Objetivos -->
-                <div class="pasta">
+                <div class="pasta" style="cursor: pointer;" onclick="openObjetivosModal()">
                     <div class="pasta-header">
                         <i class="fa-solid fa-arrows-left-right"></i>
                     </div>
@@ -336,6 +336,116 @@ $sono_percentual = $sono_meta_minutos > 0 ? min(100, ($sono_total_minutos / $son
         <a href="perfil.php" class="nav-link"><i class="fas fa-user icon"></i> <span class="text">Perfil</span></a>
     </nav>
 
+    <!-- Modal Objetivos -->
+    <div class="modal-overlay" id="objetivosModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Objetivos Diários</h2>
+                <button class="close-btn" onclick="closeObjetivosModal()">&times;</button>
+            </div>
+
+            <div class="objetivos-section">
+                <h3>Metas de Água e Exercício</h3>
+                <div class="objetivo-item">
+                    <input type="checkbox" id="obj-agua">
+                    <label for="obj-agua">Beber <?php echo $agua_meta; ?>L de Água</label>
+                </div>
+                <div class="objetivo-item">
+                    <input type="checkbox" id="obj-calorias">
+                    <label for="obj-calorias">Queimar <?php echo $calorias_meta; ?> kcal</label>
+                </div>
+            </div>
+
+            <div class="objetivos-section">
+                <h3>Alimentação (Food Search)</h3>
+                <p style="font-size: 0.9em; color: var(--cor-texto); margin-bottom: 10px;">Pesquise um alimento para ver
+                    as suas calorias e marca, através da Open Food Facts.</p>
+                <div class="search-bar">
+                    <input type="text" id="food-search-input" placeholder="Ex: Arroz, Aveia, Frango...">
+                    <button onclick="searchFood()">Procurar</button>
+                </div>
+                <div class="food-results" id="food-results-container">
+                    <!-- Resultados da pesquisa aparecerão aqui -->
+                </div>
+                <div class="food-detail" id="food-detail-container">
+                    <!-- Detalhes do alimento selecionado aparecerão aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openObjetivosModal() {
+            document.getElementById('objetivosModal').classList.add('active');
+        }
+
+        function closeObjetivosModal() {
+            document.getElementById('objetivosModal').classList.remove('active');
+            // Resetar a pesquisa ao fechar
+            document.getElementById('food-search-input').value = '';
+            document.getElementById('food-results-container').innerHTML = '';
+            document.getElementById('food-detail-container').classList.remove('active');
+        }
+
+        async function searchFood() {
+            const query = document.getElementById('food-search-input').value.trim();
+            if (!query) return;
+
+            const resultsContainer = document.getElementById('food-results-container');
+            const detailContainer = document.getElementById('food-detail-container');
+
+            resultsContainer.innerHTML = '<p>A procurar...</p>';
+            detailContainer.classList.remove('active');
+
+            try {
+                // Fazer a pesquisa usando a API Open Food Facts v2
+                const response = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=10`);
+                const data = await response.json();
+
+                if (data.products && data.products.length > 0) {
+                    resultsContainer.innerHTML = '';
+                    // Mostrar top 10 produtos
+                    data.products.forEach(product => {
+                        // Obter marca e calorias
+                        const brand = product.brands ? product.brands.split(',')[0] : 'Marca Desconhecida';
+                        const productName = product.product_name || 'Produto Sem Nome';
+                        let calories = 'N/A';
+
+                        // Obter calorias se existirem
+                        if (product.nutriments) {
+                            if (product.nutriments['energy-kcal_100g'] !== undefined) {
+                                calories = product.nutriments['energy-kcal_100g'] + ' kcal / 100g';
+                            } else if (product.nutriments['energy-kcal_value'] !== undefined) {
+                                calories = product.nutriments['energy-kcal_value'] + ' kcal';
+                            }
+                        }
+
+                        const btn = document.createElement('button');
+                        btn.className = 'food-result-btn';
+                        btn.textContent = productName;
+                        btn.onclick = () => showFoodDetail(productName, calories, brand);
+
+                        resultsContainer.appendChild(btn);
+                    });
+                } else {
+                    resultsContainer.innerHTML = '<p>Nenhum produto encontrado com esse nome.</p>';
+                }
+            } catch (error) {
+                console.error('Erro na pesquisa:', error);
+                resultsContainer.innerHTML = '<p>Ocorreu um erro ao pesquisar os alimentos. Tente novamente.</p>';
+            }
+        }
+
+        function showFoodDetail(name, calories, brand) {
+            const detailContainer = document.getElementById('food-detail-container');
+            detailContainer.innerHTML = `
+                <h4 style="margin:0 0 10px 0; color:var(--cor-destaque);">${name}</h4>
+                <p style="margin:5px 0;"><strong>Marca:</strong> ${brand}</p>
+                <p style="margin:5px 0;"><strong>Calorias:</strong> ${calories}</p>
+            `;
+            detailContainer.classList.add('active');
+        }
+    </script>
 </body>
 
 </html>

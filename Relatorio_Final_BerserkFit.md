@@ -127,9 +127,16 @@ A página `treinos.php` lista todos os treinos em cartões interativos. O utiliz
 *   Visualizar detalhes (séries/repetições).
 *   **Modo de Execução:** Ao iniciar um treino (`executar_treino.php`), o utilizador entra num modo focado onde pode marcar cada exercício como "Concluído" à medida que o realiza no ginásio.
 
+#### 4.5. Autenticação de Dois Fatores (2FA)
+Para elevar o nível de segurança da plataforma, foi implementada a Autenticação de Dois Fatores (2FA). Esta funcionalidade garante que, mesmo que a password de um utilizador seja comprometida, a conta permaneça protegida por um código dinâmico gerado no telemóvel do utilizador. O sistema foi integrado utilizando a biblioteca robusta `robthree/twofactorauth`, permitindo a sincronização via QR Code com aplicações como o Google Authenticator ou Authy.
+
 ### 5. Dificuldades Sentidas e Soluções
-Durante o desenvolvimento, a principal dificuldade foi lidar com a assincronia da API do Google e garantir que a resposta da IA fosse sempre formatada corretamente para ser processada pelo sistema. A solução passou por refinar o prompt do sistema várias vezes, obrigando a IA a seguir um esquema JSON rigoroso.
-Outro desafio foi a gestão de estado do utilizador (Sessões PHP) entre o login social e o sistema interno. Todas as dificuldades foram superadas com refatorização de código e testes modulares.
+
+*   **Identidade e Branding:** A primeira barreira foi a criação de uma marca forte que não fosse apenas "mais uma" no mercado. O desafio foi encontrar um equilíbrio visual entre o nome de inspiração nórdica e o logótipo espartano. A solução foi o desenvolvimento do conceito de "Guerreiro Universal", onde a paleta de cores e os símbolos trabalham em conjunto para comunicar intensidade e disciplina em simultâneo.
+*   **Planeamento e UX/UI:** A filtragem de funcionalidades foi complexa. O desafio residiu em estruturar as páginas e a arquitetura da informação de forma lógica, garantindo que o acesso às ferramentas fosse intuitivo para o utilizador.
+*   **Integração de IA e APIs:** O estudo sobre APIs foi extenso. A principal dificuldade técnica surgiu na gestão da assincronia da API do Google e na formatação das respostas da IA. A solução passou por aprimorar os prompts do sistema para forçar um esquema JSON rigoroso.
+*   **Autenticação e Sincronização de Dados:** Um dos maiores desafios foi a sincronização do Login com o Google. Foi necessário garantir que a resposta da autenticação externa fosse corretamente processada e convertida numa sessão PHP interna estável. O problema foi resolvido através da refatoração do código de callback e testes modulares para assegurar que o utilizador se mantinha logado ao navegar entre páginas.
+*   **Segurança e 2FA:** A implementação da Autenticação de Dois Fatores (2FA) exigiu um cuidado extra na gestão de segredos e na sincronização de tempo para a validação de códigos TOTP. Com o apoio técnico do Dinis Dias, foi possível superar as dificuldades de integração da biblioteca externa e garantir um fluxo de ativação através de QR Code que fosse simultaneamente seguro e de fácil utilização.
 
 ---
 
@@ -158,3 +165,21 @@ Este projeto permitiu consolidar conhecimentos adquiridos ao longo do curso, nom
 *   **Anexo A:** Diagrama Entidade-Relacionamento (DER) da Base de Dados BerserkFit.
 *   **Anexo B:** Capturas de ecrã do Dashboard e do Chatbot em funcionamento.
 *   **Anexo C:** Exemplo de um plano de treino gerado pela IA em formato JSON.
+*   **Anexo 2:** Implementação Detalhada da Autenticação de Dois Fatores (2FA).
+
+---
+
+## Anexo 2: Implementação Técnica do 2FA
+
+A implementação da Autenticação de Dois Fatores (2FA) foi um passo crucial para garantir a integridade dos dados dos utilizadores do BerserkFit. Este processo de desenvolvimento foi realizado com a ajuda e colaboração fundamental do meu amigo **Dinis Dias**, que contribuiu com o seu conhecimento técnico para a estruturação lógica do sistema de segurança.
+
+### Explicação do Processo:
+
+1.  **Escolha da Tecnologia:** Utilizámos a biblioteca `robthree/twofactorauth` via Composer, por ser uma solução testada e segura para implementar o algoritmo TOTP (Time-based One-Time Password).
+2.  **Configuração da Base de Dados:** Adicionámos o campo `tfa_secret` à tabela `user`. Este campo armazena a chave secreta gerada para cada utilizador (em formato Base32), que é cruzada com o código inserido no momento do login.
+3.  **Desenvolvimento do Setup:** No ficheiro `setup_2fa.php`, o sistema gera uma chave única e apresenta-a ao utilizador através de um **QR Code**. Ao escanear este código com uma app (como o Google Authenticator), o telemóvel do utilizador fica sincronizado com o servidor.
+4.  **Fluxo de Verificação:**
+    *   No login tradicional, o sistema verifica se o utilizador tem o 2FA ativo.
+    *   Se ativo, o utilizador é redirecionado para `login_2fa.php`, onde deve introduzir o código de 6 dígitos.
+    *   Apenas após a validação correta deste código é que a sessão é plenamente iniciada, garantindo que o acesso é feito pelo legítimo proprietário da conta.
+5.  **Interface e UX:** A interface foi desenhada para ser intuitiva, fornecendo instruções claras durante o processo de ativação e garantindo um feedback visual imediato em caso de erro ou sucesso na validação.
